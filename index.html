@@ -1,553 +1,407 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <script src="https://alwingulla.com/88/tag.min.js" data-zone="3573868" async data-cfasync="false"></script>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <meta name="theme-color" content="#070913" />
-  <title>NEON ARCADE - EA Arena</title>
-  <style>
-    :root {
-      --bg: #070913;
-      --panel: #101428;
-      --neon-cyan: #00f3ff;
-      --neon-pink: #ff0055;
-      --neon-yellow: #f4ee2a;
-      --neon-green: #00ff66;
-      --text: #ffffff;
-      --text-dim: #8b9bb4;
-    }
-    * { box-sizing: border-box; user-select: none; -webkit-user-select: none; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-    body { background-color: var(--bg); color: var(--text); overflow: hidden; width: 100vw; height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; }
-    #game-container { position: relative; width: 100%; max-width: 480px; height: 100%; max-height: 850px; background: var(--panel); display: flex; flex-direction: column; box-shadow: 0 0 30px rgba(0,243,255,0.15); overflow: hidden; }
-    header { display: flex; justify-content: space-between; align-items: center; padding: 10px 14px; background: rgba(7,9,19,0.9); border-bottom: 1px solid rgba(0,243,255,0.2); z-index: 10; }
-    .wallet-box { display: flex; gap: 5px; }
-    .coin-badge { background: rgba(0,0,0,0.4); border: 1px solid var(--neon-cyan); border-radius: 20px; padding: 4px 7px; font-size: 11px; font-weight: bold; color: var(--neon-cyan); display: flex; align-items: center; gap: 3px; cursor: pointer; }
-    .coin-badge.tickets { border-color: var(--neon-yellow); color: var(--neon-yellow); }
-    .coin-badge.cash { border-color: var(--neon-green); color: var(--neon-green); }
-    canvas { flex: 1; display: block; background: radial-gradient(circle at center, #101428 0%, #070913 100%); }
-    .screen { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(7,9,19,0.96); display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; z-index: 20; transition: opacity 0.2s ease; overflow-y: auto; }
-    .screen.hidden { opacity: 0; pointer-events: none; }
-    h1 { font-size: 24px; color: var(--neon-cyan); text-shadow: 0 0 10px rgba(0,243,255,0.5); margin-bottom: 4px; text-align: center; font-weight: 900; }
-    p.subtitle { color: var(--text-dim); font-size: 11px; margin-bottom: 14px; text-align: center; }
-    .btn { background: linear-gradient(135deg, var(--neon-cyan), #0088ff); color: #000; border: none; padding: 10px 18px; font-size: 13px; font-weight: bold; border-radius: 30px; cursor: pointer; text-transform: uppercase; box-shadow: 0 0 12px rgba(0,243,255,0.4); margin: 5px 0; width: 85%; max-width: 260px; transition: transform 0.1s; }
-    .btn:active { transform: scale(0.96); }
-    .btn.pink { background: linear-gradient(135deg, var(--neon-pink), #ff00aa); color: #fff; box-shadow: 0 0 12px rgba(255,0,85,0.4); }
-    .btn.green { background: linear-gradient(135deg, var(--neon-green), #00aa44); color: #000; box-shadow: 0 0 12px rgba(0,255,102,0.4); }
-    .btn.yellow { background: linear-gradient(135deg, var(--neon-yellow), #ffaa00); color: #000; box-shadow: 0 0 12px rgba(244,238,42,0.4); }
-    .btn.secondary { background: transparent; border: 2px solid var(--text-dim); color: var(--text-dim); box-shadow: none; }
-    .hud-overlay { position: absolute; top: 55px; left: 0; width: 100%; padding: 0 20px; display: flex; justify-content: space-between; pointer-events: none; z-index: 5; }
-    .stat-display { font-size: 22px; font-weight: 900; color: #fff; text-shadow: 0 0 8px rgba(0,0,0,0.8); }
-    #toast { position: absolute; top: 75px; left: 50%; transform: translateX(-50%) translateY(-20px); background: rgba(0,243,255,0.95); color: #000; padding: 8px 16px; border-radius: 20px; font-weight: bold; font-size: 11px; opacity: 0; transition: all 0.3s; z-index: 100; pointer-events: none; text-align: center; box-shadow: 0 0 15px rgba(0,243,255,0.6); max-width: 90%; }
-    #toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
-    
-    .card-box { background: rgba(255,255,255,0.05); padding: 12px; border-radius: 12px; width: 100%; max-width: 300px; margin-bottom: 10px; border: 1px solid rgba(0,243,255,0.2); }
-    input, select { width: 100%; padding: 8px 10px; margin: 4px 0 8px 0; border-radius: 8px; border: 1px solid rgba(0,243,255,0.4); background: rgba(0,0,0,0.6); color: #fff; font-size: 12px; user-select: text; -webkit-user-select: text; }
-    label { font-size: 10px; color: var(--text-dim); display: block; text-align: left; }
-    .req-item { background: rgba(0,0,0,0.4); padding: 7px; border-radius: 8px; margin-bottom: 5px; border-left: 3px solid var(--neon-yellow); font-size: 10px; text-align: left; display: flex; justify-content: space-between; align-items: center; }
-    .req-item.paid { border-left-color: var(--neon-green); opacity: 0.7; }
-    .mini-btn { background: var(--neon-green); color: #000; border: none; padding: 3px 6px; border-radius: 4px; font-weight: bold; font-size: 9px; cursor: pointer; }
-    
-    .game-card { background: rgba(0,243,255,0.08); border: 1px solid var(--neon-cyan); border-radius: 10px; padding: 10px; margin: 5px 0; width: 85%; max-width: 260px; display: flex; flex-direction: column; align-items: center; cursor: pointer; }
-    .lang-toggle { background: rgba(0,243,255,0.2); border: 1px solid var(--neon-cyan); color: #fff; padding: 3px 8px; border-radius: 12px; font-size: 10px; font-weight: bold; cursor: pointer; }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>NEON ARCADE</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial;background:linear-gradient(135deg,#fff0f7,#e6faff,#f0eaff);color:#25194d}
+header{padding:18px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px}
+.logo{font-size:25px;font-weight:900;color:#7948e8}
+.wallet{background:white;padding:12px 18px;border-radius:30px;font-weight:bold}
+.hero{margin:10px 15px;padding:35px 25px;border-radius:25px;background:linear-gradient(120deg,#6843e9,#ed5caa);color:white}
+.hero h1{font-size:clamp(32px,7vw,55px);margin:10px 0}
+.hero p{line-height:1.6}
+button{border:0;cursor:pointer;font-weight:bold}
+.play{background:#ffe45c;color:#38256d;padding:13px 23px;border-radius:30px}
+h2{margin:25px 18px 15px}
+.games{display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:13px;padding:0 15px 30px}
+.game{background:white;border-radius:18px;overflow:hidden;text-align:left;color:#25194d;box-shadow:0 5px 18px #38236b15}
+.art{height:110px;display:grid;place-items:center;font-size:52px;background:linear-gradient(135deg,var(--a),var(--b))}
+.info{padding:12px}.info p{font-size:12px;color:#777}
+.modal{display:none;position:fixed;inset:0;background:#17102ddd;z-index:5;align-items:center;justify-content:center;padding:12px}
+.modal.show{display:flex}
+.panel{background:white;width:min(700px,100%);padding:17px;border-radius:22px}
+.panelhead{display:flex;justify-content:space-between;align-items:center}
+.close{font-size:25px;background:#eee8ff;border-radius:50%;width:38px;height:38px}
+canvas{width:100%;background:linear-gradient(140deg,#211951,#5140a0);border-radius:15px;touch-action:none}
+.controls{display:flex;gap:8px;justify-content:center;margin:12px;flex-wrap:wrap}
+.controls button{background:#754be8;color:white;padding:12px 18px;border-radius:25px}
+#message{text-align:center;color:#6b5a9c;font-size:13px}
+footer{text-align:center;padding:20px;color:#777}
+</style>
 </head>
 <body>
-  <div id="game-container">
-    <header>
-      <div class="wallet-box">
-        <div class="coin-badge tickets" onclick="openWallet()">🎫 <span id="val-tickets">50</span></div>
-        <div class="coin-badge cash" onclick="openWallet()">💵 $<span id="val-cash">0.50</span></div>
-      </div>
-      <div style="display:flex; gap:5px; align-items:center;">
-        <button class="lang-toggle" onclick="toggleLanguage()" id="lang-btn">TZ / EN</button>
-        <button class="btn secondary" style="padding:3px 6px; font-size:9px; width:auto; margin:0;" onclick="openDashboard()">Owner</button>
-      </div>
-    </header>
+<header>
+<div class="logo">⚡ NEON ARCADE</div>
+<div class="wallet">🎟️ <span id="tickets">0</span> Tickets</div>
+</header>
 
-    <div class="hud-overlay">
-      <div class="stat-display" id="hud-score">0</div>
-    </div>
+<section class="hero">
+<small>WELCOME TO THE PLAY ZONE</small>
+<h1>PLAY BEYOND LIMITS!</h1>
+<p>10 exciting games. Challenge yourself, beat your records and have fun!</p>
+<button class="play" onclick="document.getElementById('games').scrollIntoView({behavior:'smooth'})">PLAY NOW 🎮</button>
+</section>
 
-    <canvas id="gameCanvas"></canvas>
+<h2>🔥 CHOOSE YOUR GAME</h2>
+<div class="games" id="games"></div>
+<footer>NEON ARCADE · PLAY · ENJOY · REPEAT</footer>
 
-    <!-- MAIN MENU -->
-    <div id="screen-menu" class="screen">
-      <h1 id="t-title">NEON ARCADE</h1>
-      <p class="subtitle" id="t-subtitle">Chagua game, kusanya tiketi & utoe pesa Afrika Mashariki!</p>
-      
-      <div class="game-card" onclick="selectGame(1)">
-        <h3 id="g1-name" style="color:var(--neon-cyan); font-size:15px;">1. Neon Stacker</h3>
-        <p id="g1-desc" style="color:var(--text-dim); font-size:10px; margin:0;">Panga vizuizi juu kwa juu.</p>
-      </div>
+<div class="modal" id="modal">
+<div class="panel">
+<div class="panelhead">
+<h2 id="title">Game</h2>
+<button class="close" onclick="closeGame()">×</button>
+</div>
+<p>Score: <b id="score">0</b> | Best: <b id="best">0</b></p>
+<canvas id="canvas" width="600" height="380"></canvas>
+<div class="controls">
+<button onclick="startGame()">START / RESTART</button>
+<button onclick="move(-1)">◀ LEFT</button>
+<button onclick="move(1)">RIGHT ▶</button>
+</div>
+<p id="message">Press START to play!</p>
+</div>
+</div>
 
-      <div class="game-card" onclick="selectGame(2)" style="border-color: var(--neon-pink);">
-        <h3 id="g2-name" style="color:var(--neon-pink); font-size:15px;">2. Neon Runner</h3>
-        <p id="g2-desc" style="color:var(--text-dim); font-size:10px; margin:0;">Kimbia na ruka vizuizi.</p>
-      </div>
+<script>
+const games=[
+["Neon Stacker","🧱","Timing","#36d9ff","#6252ed"],
+["Neon Runner","🏃","Action","#ff75a8","#ffb45e"],
+["Neon Dodger","☄️","Survival","#8675ff","#43d8ff"],
+["Bubble Pop","🫧","Arcade","#5ce1d4","#598cff"],
+["Memory Match","🧠","Puzzle","#ff9ed1","#a77bff"],
+["Neon Snake","🐍","Classic","#a1ed65","#22c9a0"],
+["Neon Pong","🏓","Sport","#ffcf58","#ff7b65"],
+["Brick Breaker","💥","Arcade","#ff8d62","#e95da8"],
+["Flappy Star","⭐","Skill","#f9dc62","#ff9b55"],
+["Whack-a-Mole","🐹","Quick","#78d9ff","#8d73ed"]
+];
 
-      <div class="game-card" onclick="selectGame(3)" style="border-color: var(--neon-yellow);">
-        <h3 id="g3-name" style="color:var(--neon-yellow); font-size:15px;">3. Neon Dodger</h3>
-        <p id="g3-desc" style="color:var(--text-dim); font-size:10px; margin:0;">Kwepa mabomu yanayoshuka.</p>
-      </div>
+let tickets=Number(localStorage.getItem("neon_tickets")||0);
+let best=Number(localStorage.getItem("neon_best")||0);
+let id=0,score=0,playing=false,raf=0,state={},last=0;
+const canvas=document.getElementById("canvas");
+const ctx=canvas.getContext("2d");
+const $=x=>document.getElementById(x);
 
-      <div style="display:flex; gap:5px; width:100%; justify-content:center; margin-top:8px;">
-        <button class="btn pink" style="width:42%; font-size:11px; padding:7px;" onclick="triggerRewardedAd()" id="btn-ad">Watch Ad (+10 🎫)</button>
-        <button class="btn green" style="width:42%; font-size:11px; padding:7px;" onclick="openWallet()" id="btn-wallet">Wallet 💵</button>
-      </div>
-    </div>
+function wallet(){
+$("tickets").textContent=tickets;
+$("best").textContent=best;
+}
+$("games").innerHTML=games.map((g,i)=>`
+<button class="game" onclick="openGame(${i})">
+<div class="art" style="--a:${g[3]};--b:${g[4]}">${g[1]}</div>
+<div class="info"><strong>${g[0]}</strong><p>${g[2]} GAME</p></div>
+</button>`).join("");
 
-    <!-- GAME OVER -->
-    <div id="screen-gameover" class="screen hidden">
-      <h1 id="go-title">GAME OVER</h1>
-      <p class="subtitle" id="go-score-text">Score: 0</p>
-      <button class="btn" onclick="startGame()" id="go-btn-again">Cheza Tena</button>
-      <button class="btn pink" onclick="triggerRewardedAd()" id="go-btn-ad">Angalia Tangazo (+10 🎫)</button>
-      <button class="btn green" onclick="openWallet()" id="go-btn-withdraw">Toa Pesa (Withdraw)</button>
-      <button class="btn secondary" onclick="returnToMenu()" id="go-btn-menu">Menu Kuu</button>
-    </div>
+function openGame(n){
+id=n;
+$("title").textContent=games[n][0];
+$("modal").classList.add("show");
+drawIntro();
+}
+function closeGame(){
+playing=false;
+cancelAnimationFrame(raf);
+$("modal").classList.remove("show");
+}
+function drawIntro(){
+ctx.clearRect(0,0,600,380);
+ctx.textAlign="center";
+ctx.fillStyle="white";
+ctx.font="70px Arial";
+ctx.fillText(games[id][1],300,170);
+ctx.font="22px Arial";
+ctx.fillText("PRESS START TO PLAY",300,230);
+}
+function startGame(){
+cancelAnimationFrame(raf);
+playing=true;score=0;last=0;state={};
+$("score").textContent=0;
+$("message").textContent="Game started!";
 
-    <!-- WALLET & WITHDRAW SCREEN -->
-    <div id="screen-wallet" class="screen hidden">
-      <h1 id="w-head">WALLET & WITHDRAW</h1>
-      <p class="subtitle" id="w-sub">M-Pesa, Tigo, Airtel & MTN</p>
-      
-      <div class="card-box">
-        <div style="display:flex; justify-content:space-between; margin-bottom:6px;">
-          <div>
-            <span style="font-size:10px; color:var(--text-dim);" id="lbl-tik">Tiketi Zako:</span>
-            <p style="font-size:15px; color:var(--neon-yellow); font-weight:bold;" id="w-tickets">50 🎫</p>
-          </div>
-          <div style="text-align:right;">
-            <span style="font-size:10px; color:var(--text-dim);" id="lbl-cash">Salio la Pesa:</span>
-            <p style="font-size:15px; color:var(--neon-green); font-weight:bold;" id="w-cash">$0.50</p>
-          </div>
-        </div>
-        <button class="btn yellow" style="width:100%; font-size:10px; padding:6px;" onclick="convertTickets()" id="btn-conv">Badili 100 🎫 = $0.10</button>
-      </div>
+if(id===0)state={x:0,w:200,blocks:[{x:200,y:320,w:200}],y:280,v:4};
+if(id===1)state={y:300,vy:0,obstacles:[],t:0};
+if(id===2)state={x:300,meteors:[],t:0};
+if(id===3)state={bubbles:[],t:0,time:30};
+if(id===4)state={cards:["🍓","🍋","🍇","🍉","🍒","🥝","🍓","🍋","🍇","🍉","🍒","🥝"].sort(()=>Math.random()-.5),open:[],done:[],moves:0};
+if(id===5)state={snake:[{x:10,y:7},{x:9,y:7},{x:8,y:7}],dx:1,dy:0,food:{x:15,y:7},t:0};
+if(id===6)state={x:300,y:190,vx:4,vy:3,p:150};
+if(id===7){
+state={x:300,y:280,vx:3,vy:-4,p:250,bricks:[]};
+for(let r=0;r<4;r++)for(let c=0;c<8;c++)state.bricks.push({x:30+c*68,y:40+r*25,on:true});
+}
+if(id===8)state={y:180,vy:0,gates:[],t:0};
+if(id===9)state={hole:4,t:0,until:0};
+raf=requestAnimationFrame(loop);
+}
+function add(n=1){
+score+=n;
+$("score").textContent=score;
+}
+function end(){
+if(!playing)return;
+playing=false;
+cancelAnimationFrame(raf);
+tickets+=Math.max(1,Math.floor(score/5));
+best=Math.max(best,score);
+localStorage.setItem("neon_tickets",tickets);
+localStorage.setItem("neon_best",best);
+wallet();
+$("message").textContent="Game over! Tickets earned. Play again!";
+}
+function bg(){
+ctx.clearRect(0,0,600,380);
+ctx.fillStyle="#ffffff18";
+for(let x=15;x<600;x+=35)
+for(let y=15;y<380;y+=35)ctx.fillRect(x,y,2,2);
+}
+function box(x,y,w,h,c){
+ctx.fillStyle=c;ctx.fillRect(x,y,w,h);
+}
+function ball(x,y,r,c){
+ctx.fillStyle=c;ctx.beginPath();ctx.arc(x,y,r,0,Math.PI*2);ctx.fill();
+}
+function label(t,x,y){
+ctx.fillStyle="white";ctx.font="bold 20px Arial";ctx.fillText(t,x,y);
+}
+function loop(t){
+if(!playing)return;
+let dt=Math.min((t-last)/16.67||1,2);
+last=t;bg();
+let s=state;
 
-      <div class="card-box">
-        <label id="lbl-net">Mtandao (Network):</label>
-        <select id="w-network">
-          <option value="M-Pesa TZ">M-Pesa (Vodacom Tanzania)</option>
-          <option value="Tigo Pesa">Tigo Pesa / Yas (Tanzania)</option>
-          <option value="Airtel Money">Airtel Money (TZ / KE / UG)</option>
-          <option value="Halopesa">Halopesa (Tanzania)</option>
-          <option value="M-Pesa KE">M-Pesa (Safaricom Kenya)</option>
-          <option value="MTN UG">MTN Mobile Money (Uganda)</option>
-        </select>
+switch(id){
+case 0:{
+let base=s.blocks[s.blocks.length-1];
+s.x+=s.v*dt;
+if(s.x<0||s.x+s.w>600)s.v*=-1;
+s.blocks.forEach(b=>box(b.x,b.y,b.w,25,"#38dfff"));
+box(s.x,s.y,s.w,25,"#ffe45c");
+label("TAP TO STACK",220,35);
+break;
+}
+case 1:{
+s.t+=dt;
+if(s.t>60){s.t=0;s.obstacles.push({x:620,y:300})}
+s.vy+=.6*dt;s.y+=s.vy*dt;
+if(s.y>300)s.y=300,s.vy=0;
+box(70,s.y,30,45,"#ff64ad");
+s.obstacles.forEach(o=>{
+o.x-=5*dt;box(o.x,o.y,30,45,"#ffe45c");
+if(o.x<100&&o.x>65)end();
+if(!o.p&&o.x<60)o.p=1,add();
+});
+s.obstacles=s.obstacles.filter(o=>o.x>-40);
+break;
+}
+case 2:{
+s.t+=dt;
+if(s.t>24){s.t=0;s.meteors.push({x:Math.random()*580,y:-15})}
+ball(s.x,335,15,"#49e5ff");
+s.meteors.forEach(m=>{
+m.y+=4*dt;ball(m.x,m.y,12,"#ff6aa9");
+if(Math.hypot(m.x-s.x,m.y-335)<24)end();
+if(!m.p&&m.y>390)m.p=1,add();
+});
+s.meteors=s.meteors.filter(m=>m.y<400);
+break;
+}
+case 3:{
+s.t+=dt;s.time-=dt/60;
+if(s.t>12){s.t=0;s.bubbles.push({x:20+Math.random()*560,y:360,r:12+Math.random()*15})}
+s.bubbles.forEach(b=>{b.y-=2*dt;ball(b.x,b.y,b.r,"#58dfff")});
+s.bubbles=s.bubbles.filter(b=>b.y>0);
+label("TIME "+Math.ceil(s.time),20,30);
+if(s.time<=0)end();
+break;
+}
+case 4:{
+label("MATCH THE PAIRS",210,28);
+s.cards.forEach((v,i)=>{
+let x=85+(i%4)*110,y=50+Math.floor(i/4)*105;
+box(x,y,85,75,s.done.includes(i)?"#26b99b":s.open.includes(i)?"#8b67ed":"#53438d");
+ctx.fillStyle="white";ctx.font="30px Arial";ctx.textAlign="center";
+ctx.fillText(s.done.includes(i)||s.open.includes(i)?v:"?",x+42,y+48);
+});
+if(s.done.length===12)end();
+break;
+}
+case 5:{
+s.t+=dt;
+if(s.t>8){
+s.t=0;
+let h={x:s.snake[0].x+s.dx,y:s.snake[0].y+s.dy};
+if(h.x<0||h.x>=20||h.y<0||h.y>=12||s.snake.some(a=>a.x===h.x&&a.y===h.y)){end();break}
+s.snake.unshift(h);
+if(h.x===s.food.x&&h.y===s.food.y){
+add(5);s.food={x:Math.floor(Math.random()*20),y:Math.floor(Math.random()*12)};
+}else s.snake.pop();
+}
+s.snake.forEach((a,i)=>box(a.x*30,10+a.y*30,25,25,i?"#36dcae":"#e0ff63"));
+ball(12+s.food.x*30,22+s.food.y*30,8,"#ff639f");
+break;
+}
+case 6:{
+s.x+=s.vx*dt;s.y+=s.vy*dt;
+if(s.x<10||s.x>590)s.vx*=-1;
+if(s.y<10||s.y>370)s.vy*=-1;
+box(20,s.p,12,80,"#ff68ad");
+ball(s.x,s.y,10,"#ffe45c");
+if(s.x<40&&s.y>s.p-5&&s.y<s.p+85){s.vx=Math.abs(s.vx);add()}
+if(s.x<0)end();
+if(s.x>590){s.vx=-Math.abs(s.vx);add()}
+break;
+}
+case 7:{
+s.x+=s.vx*dt;s.y+=s.vy*dt;
+if(s.x<10||s.x>590)s.vx*=-1;
+if(s.y<10)s.vy=Math.abs(s.vy);
+box(s.p,355,100,12,"#42e3ff");
+ball(s.x,s.y,9,"#ffe45c");
+if(s.y>340&&s.x>s.p&&s.x<s.p+100)s.vy=-Math.abs(s.vy);
+s.bricks.forEach(b=>{
+if(b.on){
+box(b.x,b.y,58,16,"#ff68ad");
+if(s.x>b.x&&s.x<b.x+58&&s.y>b.y&&s.y<b.y+16){
+b.on=false;s.vy*=-1;add();
+}
+}
+});
+if(s.y>390)end();
+if(s.bricks.every(b=>!b.on))end();
+break;
+}
+case 8:{
+s.t+=dt;s.vy+=.35*dt;s.y+=s.vy*dt;
+if(s.t>90){
+s.t=0;let top=50+Math.random()*160;
+s.gates.push({x:620,top,bottom:top+130});
+}
+ball(120,s.y,14,"#ffe45c");
+s.gates.forEach(g=>{
+g.x-=3*dt;
+box(g.x,0,35,g.top,"#50dcb7");
+box(g.x,g.bottom,35,380-g.bottom,"#50dcb7");
+if(g.x<135&&g.x>85&&(s.y<g.top||s.y>g.bottom))end();
+if(!g.p&&g.x<85)g.p=1,add();
+});
+if(s.y<0||s.y>380)end();
+break;
+}
+case 9:{
+s.t++;
+if(s.t>s.until){s.hole=Math.floor(Math.random()*9);s.until=s.t+40}
+for(let i=0;i<9;i++){
+let x=120+(i%3)*180,y=90+Math.floor(i/3)*100;
+ball(x,y,30,"#6b4b9d");
+if(i===s.hole){
+ball(x,y-5,21,"#c18a52");
+ball(x-8,y-10,4,"white");
+ball(x+8,y-10,4,"white");
+}
+}
+label("TAP THE MOLE",210,30);
+if(s.t>1500)end();
+break;
+}
+}
+if(playing)raf=requestAnimationFrame(loop);
+}
 
-        <label id="lbl-phone">Namba ya Simu (Phone Number):</label>
-        <input type="tel" id="w-phone" placeholder="Mfano: 0755123456">
+function move(dir){
+if(!playing)return;
+let s=state;
+if(id===0){
+let base=s.blocks[s.blocks.length-1];
+let left=Math.max(s.x,base.x);
+let right=Math.min(s.x+s.w,base.x+base.w);
+if(right<=left){end();return}
+let w=right-left;
+s.blocks.push({x:left,y:base.y-30,w});
+s.w=w;s.y=base.y-60;s.x=0;s.v=4+score*.12;
+add();
+}
+if(id===1&&s.y>=300)s.vy=-12;
+if(id===2)s.x=Math.max(15,Math.min(585,s.x+dir*35));
+if(id===3){
+let b=s.bubbles.pop();
+if(b)add();
+}
+if(id===6)s.p=Math.max(0,Math.min(300,s.p+dir*35));
+if(id===7)s.p=Math.max(0,Math.min(500,s.p+dir*35));
+if(id===8)s.vy=-7;
+}
 
-        <label id="lbl-amt">Kiasi (Kima cha chini $5.00):</label>
-        <input type="number" id="w-amount" placeholder="5.00" step="0.50" min="5.00">
+canvas.addEventListener("pointerdown",e=>{
+if(!playing)return;
+let r=canvas.getBoundingClientRect();
+let x=(e.clientX-r.left)*600/r.width;
+let y=(e.clientY-r.top)*380/r.height;
+let s=state;
+if(id===0)move(1);
+if(id===1&&s.y>=300)s.vy=-12;
+if(id===2)s.x=x;
+if(id===3){
+for(let i=s.bubbles.length-1;i>=0;i--){
+let b=s.bubbles[i];
+if(Math.hypot(x-b.x,y-b.y)<b.r+12){s.bubbles.splice(i,1);add();break}
+}
+}
+if(id===4){
+for(let i=0;i<12;i++){
+let cx=85+(i%4)*110,cy=50+Math.floor(i/4)*105;
+if(x>cx&&x<cx+85&&y>cy&&y<cy+75&&!s.done.includes(i)&&!s.open.includes(i)){
+s.open.push(i);
+if(s.open.length===2){
+s.moves++;
+if(s.cards[s.open[0]]===s.cards[s.open[1]]){
+s.done.push(...s.open);add(2);
+s.open=[];
+}else setTimeout(()=>{s.open=[]},700);
+}
+break;
+}
+}
+}
+if(id===5){
+let dx=x-300;
+if(Math.abs(dx)>20){
+if(dx>0&&s.dx!==-1)s.dx=1,s.dy=0;
+if(dx<0&&s.dx!==1)s.dx=-1,s.dy=0;
+}
+}
+if(id===6)s.p=y-40;
+if(id===7)s.p=x-50;
+if(id===8)s.vy=-7;
+if(id===9){
+let i=s.hole;
+let cx=120+(i%3)*180,cy=90+Math.floor(i/3)*100;
+if(Math.hypot(x-cx,y-cy)<35){add(2);s.hole=-1;s.until=s.t+5}
+}
+});
 
-        <button class="btn green" style="width:100%; margin-top:3px; font-size:11px;" onclick="submitWithdraw()" id="btn-sub-wd">Tuma Ombi la Kutoa Pesa</button>
-      </div>
+window.addEventListener("keydown",e=>{
+if(!playing)return;
+if(e.key==="ArrowLeft")move(-1);
+if(e.key==="ArrowRight")move(1);
+if(e.key===" "){
+if(id===1&&state.y>=300)state.vy=-12;
+if(id===8)state.vy=-7;
+}
+if(id===5){
+if(e.key==="ArrowUp"&&state.dy!==1)state.dx=0,state.dy=-1;
+if(e.key==="ArrowDown"&&state.dy!==-1)state.dx=0,state.dy=1;
+if(e.key==="ArrowLeft"&&state.dx!==1)state.dx=-1,state.dy=0;
+if(e.key==="ArrowRight"&&state.dx!==-1)state.dx=1,state.dy=0;
+}
+});
 
-      <button class="btn secondary" onclick="returnToMenu()" id="btn-back">Rudi Nyuma</button>
-    </div>
-
-    <!-- OWNER DASHBOARD -->
-    <div id="screen-dashboard" class="screen hidden">
-      <h1 style="font-size:20px;">OWNER DASHBOARD</h1>
-      <p class="subtitle">Mapato & Maombi ya EA</p>
-      
-      <div class="card-box">
-        <div style="display:flex; justify-content:space-between;">
-          <div>
-            <p style="font-size: 10px; color: var(--text-dim);">Mapato (Monetag):</p>
-            <p style="font-size: 15px; color: var(--neon-green); font-weight: bold;" id="dash-ad-rev">$0.0000</p>
-          </div>
-          <div style="text-align:right;">
-            <p style="font-size: 10px; color: var(--text-dim);">Matangazo Leo:</p>
-            <p style="font-size: 15px; color: var(--neon-cyan); font-weight: bold;" id="dash-ads-count">0 / 15</p>
-          </div>
-        </div>
-      </div>
-
-      <div class="card-box" style="max-height: 160px; overflow-y: auto;">
-        <p style="font-size: 11px; color: var(--neon-yellow); font-weight: bold; margin-bottom: 5px; text-align:left;">Maombi ya Withdraw:</p>
-        <div id="withdraw-list">
-          <p style="font-size:10px; color:var(--text-dim);">Hakuna maombi bado.</p>
-        </div>
-      </div>
-
-      <button class="btn secondary" onclick="returnToMenu()">Funga Dashboard</button>
-    </div>
-
-    <div id="toast">Notification</div>
-  </div>
-
-  <script>
-    const canvas = document.getElementById('gameCanvas');
-    const ctx = canvas.getContext('2d');
-
-    let currentLang = 'TZ'; // TZ or EN
-    let state = {
-      tickets: 50,
-      cash: 0.50,
-      adsWatched: 0,
-      ownerAdRev: 0.0000,
-      withdrawRequests: []
-    };
-
-    let currentGameId = 1;
-    let gameState = "MENU";
-    let score = 0;
-
-    // Stacker
-    let tower = [], currentBlock = null, cameraY = 0;
-    const BLOCK_HEIGHT = 30, INITIAL_WIDTH = 160;
-
-    // Runner
-    let runner = { x: 50, y: 0, w: 28, h: 36, vy: 0, jumping: false };
-    let obstacles = [], runnerSpeed = 5;
-
-    // Dodger
-    let player = { x: 0, y: 0, radius: 18, targetX: 0 };
-    let bullets = [], bulletTimer = 0;
-
-    const texts = {
-      TZ: {
-        title: "NEON ARCADE",
-        subtitle: "Chagua mchezo, kusanya tiketi & utoe pesa Afrika Mashariki!",
-        g1n: "1. Neon Stacker", g1d: "Panga vizuizi juu kwa juu.",
-        g2n: "2. Neon Runner", g2d: "Kimbia na ruka vizuizi.",
-        g3n: "3. Neon Dodger", g3d: "Kwepa mabomu yanayoshuka.",
-        ad: "Angalia Tangazo (+10 🎫)",
-        wallet: "Wallet & Pesa 💵",
-        gov: "GAME OVER",
-        again: "Cheza Tena",
-        menu: "Menu Kuu",
-        whead: "WALLET & WITHDRAW",
-        wsub: "M-Pesa, Tigo, Airtel & MTN",
-        ltik: "Tiketi Zako:",
-        lcash: "Salio la Pesa:",
-        conv: "Badili 100 🎫 = $0.10",
-        lnet: "Mtandao wa Simu (Network):",
-        lphone: "Namba ya Simu (Phone):",
-        lamt: "Kiasi ($5.00+):",
-        subwd: "Tuma Ombi la Kutoa Pesa",
-        back: "Rudi Nyuma"
-      },
-      EN: {
-        title: "NEON ARCADE",
-        subtitle: "Select game, collect tickets & withdraw cash in East Africa!",
-        g1n: "1. Neon Stacker", g1d: "Stack blocks precisely.",
-        g2n: "2. Neon Runner", g2d: "Run and jump over obstacles.",
-        g3n: "3. Neon Dodger", g3d: "Dodge falling neon bombs.",
-        ad: "Watch Ad (+10 🎫)",
-        wallet: "Wallet & Cash 💵",
-        gov: "GAME OVER",
-        again: "Play Again",
-        menu: "Main Menu",
-        whead: "WALLET & WITHDRAW",
-        wsub: "M-Pesa, Tigo, Airtel & MTN",
-        ltik: "Your Tickets:",
-        lcash: "Cash Balance:",
-        conv: "Convert 100 🎫 = $0.10",
-        lnet: "Mobile Network:",
-        lphone: "Phone Number:",
-        lamt: "Amount ($5.00 min):",
-        subwd: "Submit Withdraw Request",
-        back: "Go Back"
-      }
-    };
-
-    function toggleLanguage() {
-      currentLang = currentLang === 'TZ' ? 'EN' : 'TZ';
-      updateLanguageUI();
-    }
-
-    function updateLanguageUI() {
-      const t = texts[currentLang];
-      document.getElementById('lang-btn').innerText = currentLang === 'TZ' ? 'TZ / SW' : 'EN / GB';
-      document.getElementById('t-title').innerText = t.title;
-      document.getElementById('t-subtitle').innerText = t.subtitle;
-      document.getElementById('g1-name').innerText = t.g1n; document.getElementById('g1-desc').innerText = t.g1d;
-      document.getElementById('g2-name').innerText = t.g2n; document.getElementById('g2-desc').innerText = t.g2d;
-      document.getElementById('g3-name').innerText = t.g3n; document.getElementById('g3-desc').innerText = t.g3d;
-      document.getElementById('btn-ad').innerText = t.ad;
-      document.getElementById('btn-wallet').innerText = t.wallet;
-      document.getElementById('go-title').innerText = t.gov;
-      document.getElementById('go-btn-again').innerText = t.again;
-      document.getElementById('go-btn-ad').innerText = t.ad;
-      document.getElementById('go-btn-withdraw').innerText = t.subwd;
-      document.getElementById('go-btn-menu').innerText = t.menu;
-      document.getElementById('w-head').innerText = t.whead;
-      document.getElementById('w-sub').innerText = t.wsub;
-      document.getElementById('lbl-tik').innerText = t.ltik;
-      document.getElementById('lbl-cash').innerText = t.lcash;
-      document.getElementById('btn-conv').innerText = t.conv;
-      document.getElementById('lbl-net').innerText = t.lnet;
-      document.getElementById('lbl-phone').innerText = t.lphone;
-      document.getElementById('lbl-amt').innerText = t.lamt;
-      document.getElementById('btn-sub-wd').innerText = t.subwd;
-      document.getElementById('btn-back').innerText = t.back;
-    }
-
-    function resizeCanvas() {
-      canvas.width = canvas.parentElement.clientWidth;
-      canvas.height = canvas.parentElement.clientHeight;
-    }
-    window.addEventListener('resize', resizeCanvas);
-    resizeCanvas();
-
-    function loadState() {
-      const saved = localStorage.getItem('neon_arcade_ea_v2');
-      if (saved) { try { state = { ...state, ...JSON.parse(saved) }; } catch(e){} }
-      updateUI();
-      updateLanguageUI();
-    }
-
-    function saveState() {
-      localStorage.setItem('neon_arcade_ea_v2', JSON.stringify(state));
-      updateUI();
-    }
-
-    function updateUI() {
-      document.getElementById('val-tickets').innerText = state.tickets;
-      document.getElementById('val-cash').innerText = state.cash.toFixed(2);
-      document.getElementById('w-tickets').innerText = state.tickets + " 🎫";
-      document.getElementById('w-cash').innerText = "$" + state.cash.toFixed(2);
-      document.getElementById('dash-ad-rev').innerText = "$" + state.ownerAdRev.toFixed(4);
-      document.getElementById('dash-ads-count').innerText = state.adsWatched + " / 15";
-      renderWithdrawRequests();
-    }
-
-    function showToast(msg) {
-      const t = document.getElementById('toast');
-      t.innerText = msg;
-      t.classList.add('show');
-      setTimeout(() => t.classList.remove('show'), 3000);
-    }
-
-    function hideAllScreens() {
-      document.querySelectorAll('.screen').forEach(s => s.classList.add('hidden'));
-    }
-
-    function selectGame(id) {
-      currentGameId = id;
-      startGame();
-    }
-
-    function startGame() {
-      hideAllScreens();
-      score = 0;
-      document.getElementById('hud-score').innerText = score;
-
-      if (currentGameId === 1) {
-        tower = []; cameraY = 0;
-        tower.push({ x: canvas.width / 2 - INITIAL_WIDTH / 2, y: canvas.height - 120, w: INITIAL_WIDTH, color: '#00f3ff' });
-        spawnStackerBlock();
-      } else if (currentGameId === 2) {
-        runner.y = canvas.height - 120; runner.vy = 0; runner.jumping = false;
-        obstacles = []; runnerSpeed = 5;
-      } else if (currentGameId === 3) {
-        player.x = canvas.width / 2; player.y = canvas.height - 80; player.targetX = player.x;
-        bullets = []; bulletTimer = 0;
-      }
-      gameState = "PLAYING";
-    }
-
-    function spawnStackerBlock() {
-      const last = tower[tower.length - 1];
-      const colors = ['#00f3ff', '#ff0055', '#f4ee2a', '#00ff66'];
-      currentBlock = { x: 0, y: last.y - BLOCK_HEIGHT, w: last.w, vx: 3.5 + (tower.length * 0.1), color: colors[tower.length % colors.length], dir: 1 };
-    }
-
-    canvas.addEventListener('pointermove', (e) => {
-      if (gameState !== "PLAYING" || currentGameId !== 3) return;
-      const rect = canvas.getBoundingClientRect();
-      player.targetX = e.clientX - rect.left;
-    });
-
-    canvas.addEventListener('pointerdown', (e) => {
-      if (gameState !== "PLAYING") return;
-      if (currentGameId === 1) {
-        const last = tower[tower.length - 1];
-        const diff = currentBlock.x - last.x;
-        if (Math.abs(diff) >= last.w) { triggerGameOver(); return; }
-        currentBlock.w = last.w - Math.abs(diff);
-        currentBlock.x = diff > 0 ? last.x + diff : last.x;
-        tower.push(currentBlock);
-        score++; document.getElementById('hud-score').innerText = score;
-        if (tower.length > 6) cameraY += BLOCK_HEIGHT;
-        spawnStackerBlock();
-      } else if (currentGameId === 2) {
-        if (!runner.jumping) { runner.vy = -12; runner.jumping = true; }
-      } else if (currentGameId === 3) {
-        const rect = canvas.getBoundingClientRect();
-        player.targetX = e.clientX - rect.left;
-      }
-    });
-
-    function triggerGameOver() {
-      gameState = "GAMEOVER";
-      const earnedTickets = Math.floor(score / (currentGameId === 1 ? 5 : 3));
-      if (earnedTickets > 0) {
-        state.tickets += earnedTickets;
-        saveState();
-        document.getElementById('go-score-text').innerText = `Score: ${score} (+${earnedTickets} 🎫)`;
-      } else {
-        document.getElementById('go-score-text').innerText = "Score: " + score;
-      }
-      document.getElementById('screen-gameover').classList.remove('hidden');
-    }
-
-    function loop() {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-      if (gameState === "PLAYING") {
-        if (currentGameId === 1) {
-          ctx.save(); ctx.translate(0, cameraY);
-          for (let i = 0; i < tower.length; i++) {
-            let b = tower[i];
-            ctx.fillStyle = b.color; ctx.shadowColor = b.color; ctx.shadowBlur = 10;
-            ctx.fillRect(b.x, b.y, b.w, BLOCK_HEIGHT - 2);
-          }
-          if (currentBlock) {
-            currentBlock.x += currentBlock.vx * currentBlock.dir;
-            if (currentBlock.x <= 0 || currentBlock.x + currentBlock.w >= canvas.width) currentBlock.dir *= -1;
-            ctx.fillStyle = currentBlock.color; ctx.shadowColor = currentBlock.color; ctx.shadowBlur = 15;
-            ctx.fillRect(currentBlock.x, currentBlock.y, currentBlock.w, BLOCK_HEIGHT - 2);
-          }
-          ctx.restore();
-        } else if (currentGameId === 2) {
-          runner.vy += 0.6; runner.y += runner.vy;
-          const groundY = canvas.height - 100;
-          if (runner.y >= groundY) { runner.y = groundY; runner.vy = 0; runner.jumping = false; }
-
-          if (Math.random() < 0.02) {
-            runnerSpeed = 5 + Math.floor(score / 10);
-            obstacles.push({ x: canvas.width, y: groundY + 4, w: 20, h: 32 });
-          }
-
-          for (let i = obstacles.length - 1; i >= 0; i--) {
-            let obs = obstacles[i]; obs.x -= runnerSpeed;
-            if (runner.x < obs.x + obs.w && runner.x + runner.w > obs.x && runner.y < obs.y + obs.h && runner.y + runner.h > obs.y) {
-              triggerGameOver();
-            }
-            if (obs.x + obs.w < 0) { obstacles.splice(i, 1); score++; document.getElementById('hud-score').innerText = score; }
-            else { ctx.fillStyle = '#ff0055'; ctx.shadowBlur = 10; ctx.fillRect(obs.x, obs.y, obs.w, obs.h); }
-          }
-          ctx.fillStyle = '#00f3ff'; ctx.fillRect(0, groundY + 36, canvas.width, 4);
-          ctx.fillStyle = '#00ff66'; ctx.fillRect(runner.x, runner.y, runner.w, runner.h);
-        } else if (currentGameId === 3) {
-          player.x += (player.targetX - player.x) * 0.2;
-          bulletTimer++;
-          if (bulletTimer > 25 - Math.min(15, Math.floor(score / 5))) {
-            bulletTimer = 0;
-            bullets.push({ x: Math.random() * (canvas.width - 30) + 15, y: -20, radius: 10, speed: 4 + Math.random() * 3 });
-          }
-          for (let i = bullets.length - 1; i >= 0; i--) {
-            let b = bullets[i]; b.y += b.speed;
-            let dx = player.x - b.x, dy = player.y - b.y;
-            if (Math.sqrt(dx * dx + dy * dy) < player.radius + b.radius) triggerGameOver();
-            if (b.y > canvas.height + 20) { bullets.splice(i, 1); score++; document.getElementById('hud-score').innerText = score; }
-            else { ctx.fillStyle = '#f4ee2a'; ctx.beginPath(); ctx.arc(b.x, b.y, b.radius, 0, Math.PI * 2); ctx.fill(); }
-          }
-          ctx.fillStyle = '#00f3ff'; ctx.beginPath(); ctx.arc(player.x, player.y, player.radius, 0, Math.PI * 2); ctx.fill();
-        }
-      }
-      requestAnimationFrame(loop);
-    }
-
-    function openWallet() {
-      gameState = "MENU"; hideAllScreens(); updateUI();
-      document.getElementById('screen-wallet').classList.remove('hidden');
-    }
-
-    function convertTickets() {
-      if (state.tickets < 100) {
-        showToast(currentLang === 'TZ' ? "Unahitaji angalau Tiketi 100!" : "Need at least 100 Tickets!");
-        return;
-      }
-      state.tickets -= 100; state.cash += 0.10; saveState();
-      showToast(currentLang === 'TZ' ? "Umebadili 100 🎫 kuwa $0.10!" : "Converted 100 🎫 to $0.10!");
-    }
-
-    function submitWithdraw() {
-      const network = document.getElementById('w-network').value;
-      const phone = document.getElementById('w-phone').value.trim();
-      const amount = parseFloat(document.getElementById('w-amount').value);
-
-      if (!phone || phone.length < 9) {
-        showToast(currentLang === 'TZ' ? "Weka namba sahihi ya simu!" : "Enter valid phone number!");
-        return;
-      }
-      if (isNaN(amount) || amount < 5.00) {
-        showToast(currentLang === 'TZ' ? "Kima cha chini ni $5.00!" : "Minimum withdraw is $5.00!");
-        return;
-      }
-      if (amount > state.cash) {
-        showToast(currentLang === 'TZ' ? "Salio halitoshi!" : "Insufficient balance!");
-        return;
-      }
-
-      state.cash -= amount;
-      state.withdrawRequests.unshift({ id: Date.now(), network, phone, amount: amount.toFixed(2), status: "PENDING" });
-      document.getElementById('w-amount').value = "";
-      saveState();
-      showToast(currentLang === 'TZ' ? "Ombi limetumwa kikamilifu!" : "Withdraw request submitted!");
-    }
-
-    function renderWithdrawRequests() {
-      const list = document.getElementById('withdraw-list');
-      if (!state.withdrawRequests || state.withdrawRequests.length === 0) {
-        list.innerHTML = `<p style="font-size:10px; color:var(--text-dim);">Hakuna maombi bado.</p>`;
-        return;
-      }
-      list.innerHTML = state.withdrawRequests.map(req => `
-        <div class="req-item ${req.status === 'PAID' ? 'paid' : ''}">
-          <div><strong>$${req.amount}</strong> - ${req.network}<br><span style="color:var(--neon-cyan);">${req.phone}</span></div>
-          <div>${req.status === 'PENDING' ? `<button class="mini-btn" onclick="markAsPaid(${req.id})">Lipa</button>` : `<span style="color:var(--neon-green); font-weight:bold;">OK ✓</span>`}</div>
-        </div>
-      `).join('');
-    }
-
-    function markAsPaid(id) {
-      const req = state.withdrawRequests.find(r => r.id === id);
-      if (req) { req.status = "PAID"; saveState(); showToast("Imelipwa!"); }
-    }
-
-    function triggerRewardedAd() {
-      if (state.adsWatched >= 15) {
-        showToast(currentLang === 'TZ' ? "Umefikisha kikomo cha matangazo kwa leo!" : "Ad limit reached for today!");
-        return;
-      }
-      const prev = gameState; if (gameState === "PLAYING") gameState = "PAUSED";
-      const monetagFn = window["show_3573868"];
-
-      if (typeof monetagFn === "function") {
-        monetagFn().then(() => {
-          state.tickets += 10; state.adsWatched += 1; state.ownerAdRev += 0.0025;
-          showToast("+10 🎫 Added!"); gameState = prev === "PLAYING" ? "PLAYING" : "MENU"; saveState();
-        }).catch(() => {
-          showToast("Ad unavailable."); gameState = prev === "PLAYING" ? "PLAYING" : "MENU";
-        });
-        return;
-      }
-      setTimeout(() => {
-        state.tickets += 10; state.adsWatched += 1; state.ownerAdRev += 0.0025;
-        showToast("+10 🎫 (Demo Mode)!"); saveState(); gameState = prev === "PLAYING" ? "PLAYING" : "MENU";
-      }, 1000);
-    }
-
-    function openDashboard() {
-      gameState = "MENU"; hideAllScreens(); updateUI();
-      document.getElementById('screen-dashboard').classList.remove('hidden');
-    }
-
-    function returnToMenu() {
-      gameState = "MENU"; hideAllScreens();
-      document.getElementById('screen-menu').classList.remove('hidden');
-    }
-
-    loadState();
-    requestAnimationFrame(loop);
-  </script>
+wallet();
+</script>
 </body>
 </html>
