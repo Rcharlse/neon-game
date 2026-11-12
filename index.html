@@ -5,11 +5,10 @@
   <script src="https://alwingulla.com/88/tag.min.js" data-zone="3573868" async data-cfasync="false"></script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <meta name="theme-color" content="#04060d" />
-  <title>CYBER ARENA 3D - Pro Gaming</title>
+  <title>CYBER ARENA TSH - EA Gaming</title>
   <style>
     :root {
       --bg: #04060d;
-      --surface: rgba(14, 19, 36, 0.85);
       --cyan: #00f0ff;
       --magenta: #ff0055;
       --gold: #ffcc00;
@@ -45,7 +44,7 @@
     }
     .pill:active { transform: scale(0.95); }
     .pill.tik { color: var(--gold); border-color: rgba(255, 204, 0, 0.35); }
-    .pill.usd { color: var(--emerald); border-color: rgba(0, 255, 136, 0.35); }
+    .pill.tsh { color: var(--emerald); border-color: rgba(0, 255, 136, 0.35); }
 
     .controls-top { display: flex; gap: 6px; align-items: center; }
     .chip-btn {
@@ -78,7 +77,7 @@
     /* OVERLAY SCREENS */
     .screen {
       position: absolute; inset: 0; top: 54px;
-      background: linear-gradient(180deg, rgba(6, 9, 19, 0.94) 0%, rgba(4, 6, 13, 0.98) 100%);
+      background: linear-gradient(180deg, rgba(6, 9, 19, 0.95) 0%, rgba(4, 6, 13, 0.99) 100%);
       backdrop-filter: blur(16px); padding: 20px 18px;
       display: flex; flex-direction: column; align-items: center;
       z-index: 25; overflow-y: auto; transition: opacity 0.2s ease;
@@ -86,71 +85,71 @@
     .screen.hidden { opacity: 0; pointer-events: none; }
 
     .hero-title {
-      font-size: 26px; font-weight: 900; letter-spacing: 2px; text-transform: uppercase;
-      background: linear-gradient(90deg, var(--cyan), #ffffff, var(--magenta));
+      font-size: 24px; font-weight: 900; letter-spacing: 1.5px; text-transform: uppercase;
+      background: linear-gradient(90deg, var(--cyan), #ffffff, var(--emerald));
       -webkit-background-clip: text; -webkit-text-fill-color: transparent;
       margin-top: 4px; margin-bottom: 4px; text-align: center;
     }
-    .hero-sub { font-size: 12px; color: var(--muted); text-align: center; margin-bottom: 18px; }
+    .hero-sub { font-size: 11px; color: var(--muted); text-align: center; margin-bottom: 16px; }
 
     /* PRO GAME CARDS */
-    .game-list { width: 100%; display: flex; flex-direction: column; gap: 12px; margin-bottom: 18px; }
+    .game-list { width: 100%; display: flex; flex-direction: column; gap: 10px; margin-bottom: 14px; }
     .pro-card {
-      position: relative; width: 100%; padding: 16px; border-radius: 16px;
+      position: relative; width: 100%; padding: 14px; border-radius: 14px;
       background: linear-gradient(135deg, rgba(255,255,255,0.06) 0%, rgba(255,255,255,0.02) 100%);
       border: 1px solid rgba(255,255,255,0.1);
       display: flex; justify-content: space-between; align-items: center;
-      cursor: pointer; overflow: hidden; transition: all 0.15s ease;
+      cursor: pointer; overflow: hidden; transition: transform 0.15s ease;
     }
     .pro-card:active { transform: scale(0.98); }
     .pro-card::before {
       content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 4px;
       background: var(--accent, var(--cyan));
     }
-    .card-info h3 { font-size: 16px; font-weight: 800; color: #fff; margin-bottom: 3px; letter-spacing: 0.5px; }
-    .card-info p { font-size: 11px; color: var(--muted); }
+    .card-info h3 { font-size: 15px; font-weight: 800; color: #fff; margin-bottom: 2px; }
+    .card-info p { font-size: 10px; color: var(--muted); }
     .card-tag {
-      font-size: 10px; font-weight: 800; padding: 5px 10px; border-radius: 8px;
+      font-size: 9px; font-weight: 800; padding: 4px 8px; border-radius: 6px;
       background: rgba(0, 240, 255, 0.15); color: var(--cyan); text-transform: uppercase;
     }
 
     /* ACTION BUTTONS */
     .btn-row { display: flex; gap: 10px; width: 100%; }
     .btn {
-      width: 100%; padding: 13px 18px; border-radius: 12px; border: none;
-      font-size: 13px; font-weight: 800; letter-spacing: 0.5px; text-transform: uppercase;
-      cursor: pointer; transition: transform 0.1s; margin: 5px 0;
+      width: 100%; padding: 12px 16px; border-radius: 12px; border: none;
+      font-size: 12px; font-weight: 800; letter-spacing: 0.5px; text-transform: uppercase;
+      cursor: pointer; transition: transform 0.1s; margin: 4px 0;
     }
     .btn:active { transform: scale(0.97); }
-    .btn-cyan { background: linear-gradient(135deg, #00f0ff, #0077ff); color: #000; box-shadow: 0 4px 20px rgba(0, 240, 255, 0.3); }
-    .btn-magenta { background: linear-gradient(135deg, #ff0055, #b3003b); color: #fff; box-shadow: 0 4px 20px rgba(255, 0, 85, 0.3); }
-    .btn-emerald { background: linear-gradient(135deg, #00ff88, #009955); color: #000; box-shadow: 0 4px 20px rgba(0, 255, 136, 0.3); }
+    .btn-cyan { background: linear-gradient(135deg, #00f0ff, #0077ff); color: #000; box-shadow: 0 4px 15px rgba(0, 240, 255, 0.3); }
+    .btn-magenta { background: linear-gradient(135deg, #ff0055, #b3003b); color: #fff; box-shadow: 0 4px 15px rgba(255, 0, 85, 0.3); }
+    .btn-emerald { background: linear-gradient(135deg, #00ff88, #009955); color: #000; box-shadow: 0 4px 15px rgba(0, 255, 136, 0.3); }
     .btn-gold { background: linear-gradient(135deg, #ffcc00, #e69900); color: #000; }
     .btn-ghost { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.15); color: var(--text); }
 
     /* FORMS & PANELS */
     .glass-panel {
       width: 100%; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1);
-      border-radius: 16px; padding: 16px; margin-bottom: 14px;
+      border-radius: 14px; padding: 14px; margin-bottom: 12px;
     }
-    label { display: block; font-size: 11px; color: var(--muted); margin-bottom: 5px; font-weight: 600; }
+    label { display: block; font-size: 11px; color: var(--muted); margin-bottom: 4px; font-weight: 600; }
     input, select {
-      width: 100%; padding: 11px 12px; margin-bottom: 12px; border-radius: 10px;
+      width: 100%; padding: 10px 12px; margin-bottom: 10px; border-radius: 8px;
       background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.15);
       color: #fff; font-size: 13px; user-select: text; -webkit-user-select: text;
     }
     .req-row {
       display: flex; justify-content: space-between; align-items: center;
-      padding: 10px; background: rgba(0,0,0,0.4); border-radius: 10px;
-      margin-bottom: 8px; border-left: 3px solid var(--gold); font-size: 12px;
+      padding: 10px; background: rgba(0,0,0,0.4); border-radius: 8px;
+      margin-bottom: 6px; border-left: 3px solid var(--gold); font-size: 11px;
     }
     .req-row.paid { border-left-color: var(--emerald); opacity: 0.65; }
-    .pay-badge { background: var(--emerald); color: #000; border: none; padding: 5px 10px; border-radius: 6px; font-weight: 800; font-size: 11px; cursor: pointer; }
+    .pay-badge { background: var(--emerald); color: #000; border: none; padding: 4px 8px; border-radius: 6px; font-weight: 800; font-size: 10px; cursor: pointer; }
 
     #toast {
       position: absolute; top: 70px; left: 50%; transform: translateX(-50%) translateY(-15px);
-      background: #0f172a; border: 1px solid var(--cyan); color: #fff;
-      padding: 10px 18px; border-radius: 12px; font-size: 12px; font-weight: 700;
+      background: #0f172a; border: 1px solid var(--emerald); color: #fff;
+      padding: 10px 16px; border-radius: 12px; font-size: 11px; font-weight: 700;
       opacity: 0; pointer-events: none; transition: all 0.25s; z-index: 100;
       box-shadow: 0 10px 30px rgba(0,0,0,0.8); text-align: center; width: 85%;
     }
@@ -161,8 +160,8 @@
   <div id="app">
     <header>
       <div class="balances">
-        <div class="pill tik" onclick="openScreen('wallet')">🎫 <span id="ui-tik">50</span></div>
-        <div class="pill usd" onclick="openScreen('wallet')">💵 $<span id="ui-usd">0.50</span></div>
+        <div class="pill tik" onclick="openScreen('wallet')">🎫 <span id="ui-tik">100</span></div>
+        <div class="pill tsh" onclick="openScreen('wallet')">Tsh <span id="ui-tsh">20,000</span></div>
       </div>
       <div class="controls-top">
         <button class="chip-btn" onclick="toggleLang()" id="btn-lang">SW / EN</button>
@@ -179,8 +178,8 @@
 
     <!-- LOBBY / MAIN MENU -->
     <div class="screen" id="scr-menu">
-      <div class="hero-title">CYBER ARENA 3D</div>
-      <div class="hero-sub" id="txt-sub">Chagua mchezo wa kisasa, kusanya tiketi na utoe pesa halisi</div>
+      <div class="hero-title">CYBER ARENA TSH</div>
+      <div class="hero-sub" id="txt-sub">Cheza michezo ya kisasa, kusanya tiketi nyingi na utoe pesa za Kitanzania (Tsh)</div>
 
       <div class="game-list">
         <div class="pro-card" style="--accent: #00f0ff;" onclick="launchGame(1)">
@@ -217,18 +216,18 @@
       </div>
 
       <div class="btn-row">
-        <button class="btn btn-magenta" onclick="watchAd()" id="btn-ad">🎬 Watch Ad (+10 🎫)</button>
-        <button class="btn btn-emerald" onclick="openScreen('wallet')" id="btn-wal">💵 Withdraw</button>
+        <button class="btn btn-magenta" onclick="watchAd()" id="btn-ad">🎬 Tazama Tangazo (+50 🎫)</button>
+        <button class="btn btn-emerald" onclick="openScreen('wallet')" id="btn-wal">💵 Wallet & Withdraw</button>
       </div>
     </div>
 
     <!-- GAME OVER -->
     <div class="screen hidden" id="scr-over">
-      <div class="hero-title" style="margin-top:20px;">MISSION FAILED</div>
+      <div class="hero-title" style="margin-top:20px;">GAME OVER</div>
       <div class="hero-sub" id="over-stats" style="font-size:15px; color:#fff; font-weight:700;">Score: 0</div>
       <div style="width:100%; max-width:300px; margin-top:10px;">
         <button class="btn btn-cyan" onclick="launchGame(activeGame)" id="btn-retry">Cheza Tena</button>
-        <button class="btn btn-magenta" onclick="watchAd()" id="btn-over-ad">🎬 Pata Tiketi +10 🎫</button>
+        <button class="btn btn-magenta" onclick="watchAd()" id="btn-over-ad">🎬 Pata Tiketi (+50 🎫)</button>
         <button class="btn btn-emerald" onclick="openScreen('wallet')" id="btn-over-wd">💵 Toa Pesa (Withdraw)</button>
         <button class="btn btn-ghost" onclick="openScreen('menu')" id="btn-over-menu">Rudi Kwenye Michezo</button>
       </div>
@@ -236,41 +235,48 @@
 
     <!-- WALLET & WITHDRAW -->
     <div class="screen hidden" id="scr-wallet">
-      <div class="hero-title">EAST AFRICA WALLET</div>
-      <div class="hero-sub" id="w-sub">Badili tiketi kuwa Dola na utoe kwenda simu yako</div>
+      <div class="hero-title">WALLET YA KUTOA PESA</div>
+      <div class="hero-sub" id="w-sub">Kubadili tiketi 50 sasa kunakupa Tsh 2,000! Kutoa ni Tsh 20,000 (ukitoa unalipia Tsh 5,000 ya kuendelea kucheza na kubaki na Tsh 15,000).</div>
 
       <div class="glass-panel">
         <div style="display:flex; justify-content:space-between; margin-bottom:12px;">
           <div>
             <span style="font-size:11px; color:var(--muted);" id="lbl-t">Tiketi Zako</span>
-            <div style="font-size:20px; font-weight:900; color:var(--gold);" id="w-tik">50 🎫</div>
+            <div style="font-size:18px; font-weight:900; color:var(--gold);" id="w-tik">100 🎫</div>
           </div>
           <div style="text-align:right;">
-            <span style="font-size:11px; color:var(--muted);" id="lbl-c">Salio la Pesa</span>
-            <div style="font-size:20px; font-weight:900; color:var(--emerald);" id="w-usd">$0.50</div>
+            <span style="font-size:11px; color:var(--muted);" id="lbl-c">Salio la Tsh</span>
+            <div style="font-size:18px; font-weight:900; color:var(--emerald);" id="w-tsh">Tsh 20,000</div>
           </div>
         </div>
-        <button class="btn btn-gold" style="padding:10px; font-size:12px;" onclick="convertTik()" id="btn-conv">Badili 100 🎫 = $0.10</button>
+        <!-- THAMANI MPYA: Tiketi 50 tu zinabadilishwa kuwa Tsh 2,000 -->
+        <button class="btn btn-gold" style="padding:9px; font-size:11px;" onclick="convertTik()" id="btn-conv">Badili Tiketi 50 = Tsh 2,000</button>
       </div>
 
       <div class="glass-panel">
         <label id="lbl-net">Chagua Mtandao wa Simu</label>
         <select id="inp-net">
           <option value="M-Pesa TZ">M-Pesa (Vodacom Tanzania)</option>
-          <option value="Tigo Pesa / Yas">Tigo Pesa / Mixx by Yas (TZ)</option>
-          <option value="Airtel Money">Airtel Money (TZ / KE / UG)</option>
+          <option value="Tigo Pesa">Tigo Pesa / Mixx by Yas (Tanzania)</option>
+          <option value="Airtel Money">Airtel Money (Tanzania)</option>
           <option value="Halopesa">Halopesa (Tanzania)</option>
-          <option value="M-Pesa Kenya">M-Pesa (Safaricom Kenya)</option>
-          <option value="MTN MoMo">MTN Mobile Money (Uganda / Rwanda)</option>
+          <option value="M-Pesa KE">M-Pesa (Safaricom Kenya)</option>
+          <option value="MTN MoMo">MTN Mobile Money (Uganda)</option>
         </select>
 
-        <label id="lbl-ph">Namba ya Simu ya Malipo</label>
+        <label id="lbl-ph">Namba ya Simu ya Kupokea Pesa</label>
         <input type="tel" id="inp-ph" placeholder="Mfano: 0755 123 456">
 
-        <label id="lbl-am">Kiasi cha Kutoa (Kima cha chini $5.00)</label>
-        <input type="number" id="inp-am" placeholder="5.00" step="0.50" min="5.00">
+        <label id="lbl-am">Kiasi cha Kutoa (Tsh 20,000 au zaidi)</label>
+        <input type="number" id="inp-am" placeholder="20000" step="1000" min="20000">
 
-        <button class="btn btn-emerald" onclick="requestPayout()" id="btn-req">Tuma Ombi la Malipo</button>
+        <!-- KISANDUKU CHA ADA YA 5,000 -->
+        <div style="background: rgba(255,204,0,0.08); border: 1px dashed var(--gold); border-radius: 8px; padding: 8px; margin-bottom: 10px; font-size: 11px; color: #fff;">
+          <input type="checkbox" id="chk-renew" checked style="width:auto; margin-right:5px;">
+          <label for="chk-renew" style="display:inline; color:var(--gold);">Kata Tsh 5,000 ya Ada ya Kuendelea Kucheza (Ubakize Tsh 15,000 safi)</label>
+        </div>
+
+        <button class="btn btn-emerald" onclick="requestPayout()" id="btn-req">Tuma Ombi la Tsh 20,000</button>
       </div>
 
       <button class="btn btn-ghost" onclick="openScreen('menu')" id="btn-w-back">Rudi Nyuma</button>
@@ -278,22 +284,22 @@
 
     <!-- OWNER ADMIN -->
     <div class="screen hidden" id="scr-owner">
-      <div class="hero-title">OWNER CONTROL</div>
-      <div class="hero-sub">Mapato ya Monetag & Maombi ya Malipo</div>
+      <div class="hero-title">ADMIN DASHBOARD</div>
+      <div class="hero-sub">Mapato ya Matangazo (Monetag) & Maombi ya Wachezaji</div>
 
       <div class="glass-panel" style="display:flex; justify-content:space-between;">
         <div>
           <span style="font-size:11px; color:var(--muted);">Mapato (Zone 3573868)</span>
-          <div style="font-size:20px; font-weight:900; color:var(--emerald);" id="adm-rev">$0.0000</div>
+          <div style="font-size:18px; font-weight:900; color:var(--emerald);" id="adm-rev">$0.0000</div>
         </div>
         <div style="text-align:right;">
           <span style="font-size:11px; color:var(--muted);">Matangazo Leo</span>
-          <div style="font-size:20px; font-weight:900; color:var(--cyan);" id="adm-ads">0 / 15</div>
+          <div style="font-size:18px; font-weight:900; color:var(--cyan);" id="adm-ads">0 / 15</div>
         </div>
       </div>
 
-      <div class="glass-panel" style="max-height:240px; overflow-y:auto;">
-        <label style="color:var(--gold); margin-bottom:10px;">MAOMBI YA WACHEZAJI (WITHDRAWALS)</label>
+      <div class="glass-panel" style="max-height:220px; overflow-y:auto;">
+        <label style="color:var(--gold); margin-bottom:8px;">MAOMBI YA WITHDRAW YA WACHEZAJI</label>
         <div id="adm-list"></div>
       </div>
 
@@ -314,7 +320,7 @@
     window.addEventListener('resize', resize);
     resize();
 
-    // SYNTHESIZED SOUND ENGINE (No external files needed)
+    // AUDIO ENGINE
     const AudioCtx = window.AudioContext || window.webkitAudioContext;
     let actx = null;
     function sfx(type) {
@@ -341,34 +347,34 @@
       } catch(e) {}
     }
 
-    // STATE & LOCALIZATION
+    // STATE & LOCALIZATION (TZS)
     let lang = 'SW';
-    let data = { tik: 50, usd: 0.50, ads: 0, rev: 0, payouts: [] };
+    let data = { tik: 100, tsh: 20000, ads: 0, rev: 0, payouts: [] };
     const i18n = {
       SW: {
-        sub: "Chagua mchezo wa kisasa, kusanya tiketi na utoe pesa halisi",
+        sub: "Cheza michezo ya kisasa, kusanya tiketi nyingi na utoe pesa za Kitanzania (Tsh)",
         g1t: "CYBER VELOCITY 3D", g1d: "Mbio za magari ya kasi kwenye barabara ya 3D",
         g2t: "STAR VANGUARD", g2d: "Vita ya anga za juu dhidi ya meli za adui",
         g3t: "PLASMA BREAKER", g3d: "Vunja ngome za leza kwa mpira wa nishati",
         g4t: "TOWER ARCHITECT", g4d: "Jenga mnara mrefu wa vioo kwa umakini",
-        ad: "🎬 Tangazo (+10 🎫)", wal: "💵 Toa Pesa",
-        retry: "Cheza Tena", overAd: "🎬 Pata Tiketi +10 🎫", overWd: "💵 Toa Pesa (Withdraw)", overMenu: "Rudi Kwenye Michezo",
-        wSub: "Badili tiketi kuwa Dola na utoe kwenda simu yako",
-        lblT: "Tiketi Zako", lblC: "Salio la Pesa", conv: "Badili 100 🎫 = $0.10",
-        lblNet: "Chagua Mtandao wa Simu", lblPh: "Namba ya Simu ya Malipo", lblAm: "Kiasi cha Kutoa (Chini $5.00)",
-        req: "Tuma Ombi la Malipo", back: "Rudi Nyuma"
+        ad: "🎬 Tazama Tangazo (+50 🎫)", wal: "💵 Wallet & Withdraw",
+        retry: "Cheza Tena", overAd: "🎬 Pata Tiketi (+50 🎫)", overWd: "💵 Toa Pesa (Withdraw)", overMenu: "Rudi Kwenye Michezo",
+        wSub: "Kubadili tiketi 50 sasa kunakupa Tsh 2,000! Kutoa ni Tsh 20,000 (ukitoa unalipia Tsh 5,000 ya kuendelea kucheza).",
+        lblT: "Tiketi Zako", lblC: "Salio la Tsh", conv: "Badili Tiketi 50 = Tsh 2,000",
+        lblNet: "Chagua Mtandao wa Simu", lblPh: "Namba ya Simu ya Kupokea Pesa", lblAm: "Kiasi cha Kutoa (Tsh 20,000 min)",
+        req: "Tuma Ombi la Tsh 20,000", back: "Rudi Nyuma"
       },
       EN: {
-        sub: "Pick a pro arcade game, earn tickets & cash out real money",
+        sub: "Play modern arcade games, collect tickets & withdraw Tanzanian Shillings (Tsh)",
         g1t: "CYBER VELOCITY 3D", g1d: "High-speed 3D tunnel synthwave racer",
         g2t: "STAR VANGUARD", g2d: "Deep space starfighter laser combat",
         g3t: "PLASMA BREAKER", g3d: "Shatter neon shields with energy physics",
         g4t: "TOWER ARCHITECT", g4d: "Precision glass tower stacking",
-        ad: "🎬 Watch Ad (+10 🎫)", wal: "💵 Withdraw",
-        retry: "Play Again", overAd: "🎬 Earn +10 🎫", overWd: "💵 Withdraw Cash", overMenu: "Back to Lobby",
-        wSub: "Convert tickets to USD and cash out via Mobile Money",
-        lblT: "Your Tickets", lblC: "Cash Balance", conv: "Convert 100 🎫 = $0.10",
-        lblNet: "Select Mobile Network", lblPh: "Mobile Money Phone Number", lblAm: "Withdraw Amount ($5.00 Min)",
+        ad: "🎬 Watch Ad (+50 🎫)", wal: "💵 Wallet & Withdraw",
+        retry: "Play Again", overAd: "🎬 Earn +50 🎫", overWd: "💵 Withdraw Cash", overMenu: "Back to Lobby",
+        wSub: "Convert 50 tickets to Tsh 2,000! Withdraw Tsh 20,000 (minus Tsh 5,000 renewal fee).",
+        lblT: "Your Tickets", lblC: "Tsh Balance", conv: "Convert 50 Tickets = Tsh 2,000",
+        lblNet: "Select Mobile Network", lblPh: "Mobile Phone Number", lblAm: "Withdraw Amount (Tsh 20,000 Min)",
         req: "Submit Payout Request", back: "Back"
       }
     };
@@ -404,30 +410,30 @@
 
     function load() {
       try {
-        const s = JSON.parse(localStorage.getItem('cyber_arena_3d_v1'));
+        const s = JSON.parse(localStorage.getItem('cyber_arena_tsh_v2'));
         if (s) data = { ...data, ...s };
       } catch(e) {}
       syncUI(); applyLang();
     }
     function save() {
-      localStorage.setItem('cyber_arena_3d_v1', JSON.stringify(data));
+      localStorage.setItem('cyber_arena_tsh_v2', JSON.stringify(data));
       syncUI();
     }
     function syncUI() {
       document.getElementById('ui-tik').innerText = data.tik;
-      document.getElementById('ui-usd').innerText = data.usd.toFixed(2);
+      document.getElementById('ui-tsh').innerText = data.tsh.toLocaleString();
       document.getElementById('w-tik').innerText = data.tik + ' 🎫';
-      document.getElementById('w-usd').innerText = '$' + data.usd.toFixed(2);
+      document.getElementById('w-tsh').innerText = 'Tsh ' + data.tsh.toLocaleString();
       document.getElementById('adm-rev').innerText = '$' + data.rev.toFixed(4);
       document.getElementById('adm-ads').innerText = data.ads + ' / 15';
       const list = document.getElementById('adm-list');
       if (!data.payouts.length) {
-        list.innerHTML = `<div style="font-size:12px; color:var(--muted);">No withdrawal requests yet.</div>`;
+        list.innerHTML = `<div style="font-size:11px; color:var(--muted);">Hakuna maombi ya kutoa pesa bado.</div>`;
       } else {
         list.innerHTML = data.payouts.map(p => `
           <div class="req-row ${p.status === 'PAID' ? 'paid' : ''}">
-            <div><strong style="color:#fff;">$${p.amt}</strong> • ${p.net}<br><span style="color:var(--cyan);">${p.ph}</span></div>
-            <div>${p.status === 'PENDING' ? `<button class="pay-badge" onclick="markPaid(${p.id})">PAY</button>` : `<span style="color:var(--emerald); font-weight:800;">PAID ✓</span>`}</div>
+            <div><strong style="color:#fff;">Tsh ${Number(p.amt).toLocaleString()}</strong> • ${p.net}<br><span style="color:var(--cyan);">${p.ph}</span></div>
+            <div>${p.status === 'PENDING' ? `<button class="pay-badge" onclick="markPaid(${p.id})">LIPA</button>` : `<span style="color:var(--emerald); font-weight:800;">IMELIPWA ✓</span>`}</div>
           </div>
         `).join('');
       }
@@ -451,7 +457,7 @@
       openScreen('menu');
     }
 
-    // PARTICLE & SCREEN SHAKE ENGINE
+    // PARTICLES & SHAKE
     let particles = [];
     let shake = 0;
     function spawnParticles(x, y, color, count = 18) {
@@ -462,33 +468,15 @@
       }
     }
 
-    // GAME ENGINE VARIABLES
-    let mode = 'MENU'; // MENU, PLAY, OVER
+    let mode = 'MENU';
     let activeGame = 1;
     let score = 0;
     let frame = 0;
 
-    // G1: 3D Tunnel Racer
-    let carLane = 1; // 0, 1, 2
-    let carVisualX = 0;
-    let roadObs = [];
-    let roadSpeed = 0.018;
-
-    // G2: Star Vanguard
-    let ship = { x: 0, y: 0, tx: 0 };
-    let lasers = [];
-    let enemies = [];
-    let stars = Array.from({length: 45}, () => ({ x: Math.random()*480, y: Math.random()*800, s: 1+Math.random()*3 }));
-
-    // G3: Plasma Breaker
-    let pad = { x: 0, w: 90, h: 14 };
-    let orb = { x: 0, y: 0, vx: 4, vy: -4, r: 8 };
-    let blocks = [];
-
-    // G4: Tower Architect
-    let stack = [];
-    let mover = null;
-    let camY = 0;
+    let carLane = 1, carVisualX = 0, roadObs = [], roadSpeed = 0.018;
+    let ship = { x: 0, y: 0, tx: 0 }, lasers = [], enemies = [], stars = Array.from({length: 45}, () => ({ x: Math.random()*480, y: Math.random()*800, s: 1+Math.random()*3 }));
+    let pad = { x: 0, w: 90, h: 14 }, orb = { x: 0, y: 0, vx: 3.8, vy: -4.2, r: 8 }, blocks = [];
+    let stack = [], mover = null, camY = 0;
 
     function launchGame(id) {
       activeGame = id;
@@ -500,18 +488,9 @@
       document.querySelectorAll('.screen').forEach(s => s.classList.add('hidden'));
       document.getElementById('hud').classList.remove('hidden');
 
-      if (id === 1) {
-        carLane = 1;
-        carVisualX = canvas.width / 2;
-        roadObs = [];
-        roadSpeed = 0.016;
-      } else if (id === 2) {
-        ship.x = canvas.width / 2;
-        ship.tx = ship.x;
-        ship.y = canvas.height - 90;
-        lasers = [];
-        enemies = [];
-      } else if (id === 3) {
+      if (id === 1) { carLane = 1; carVisualX = canvas.width / 2; roadObs = []; roadSpeed = 0.016; }
+      else if (id === 2) { ship.x = canvas.width / 2; ship.tx = ship.x; ship.y = canvas.height - 90; lasers = []; enemies = []; }
+      else if (id === 3) {
         pad.x = canvas.width / 2 - pad.w / 2;
         orb = { x: canvas.width / 2, y: canvas.height - 110, vx: 3.8, vy: -4.2, r: 8 };
         blocks = [];
@@ -523,22 +502,14 @@
             blocks.push({ x: 20 + c*bw + 2, y: 90 + r*24, w: bw - 4, h: 18, color: colors[r], alive: true });
           }
         }
-      } else if (id === 4) {
-        camY = 0;
-        stack = [{ x: canvas.width/2 - 80, y: canvas.height - 100, w: 160, color: '#00f0ff' }];
-        spawnMover();
-      }
+      } else if (id === 4) { camY = 0; stack = [{ x: canvas.width/2 - 80, y: canvas.height - 100, w: 160, color: '#00f0ff' }]; spawnMover(); }
       mode = 'PLAY';
     }
 
     function spawnMover() {
       const top = stack[stack.length - 1];
       const palette = ['#00f0ff', '#00ff88', '#ffcc00', '#ff0055', '#aa00ff'];
-      mover = {
-        x: 0, y: top.y - 28, w: top.w,
-        vx: 4.2 + stack.length * 0.14, dir: 1,
-        color: palette[stack.length % palette.length]
-      };
+      mover = { x: 0, y: top.y - 28, w: top.w, vx: 4.2 + stack.length * 0.14, dir: 1, color: palette[stack.length % palette.length] };
     }
 
     function endGame() {
@@ -546,17 +517,14 @@
       mode = 'OVER';
       shake = 14;
       sfx('boom');
-      const reward = Math.max(1, Math.floor(score / 4));
-      data.tik += reward;
+      const earnedTik = Math.max(10, Math.floor(score / 2));
+      data.tik += earnedTik;
       save();
       document.getElementById('hud').classList.add('hidden');
-      document.getElementById('over-stats').innerText = `Score: ${score}  •  Earned: +${reward} 🎫`;
-      setTimeout(() => {
-        document.getElementById('scr-over').classList.remove('hidden');
-      }, 450);
+      document.getElementById('over-stats').innerText = `Score: ${score}  •  +${earnedTik} 🎫`;
+      setTimeout(() => { document.getElementById('scr-over').classList.remove('hidden'); }, 450);
     }
 
-    // TOUCH / POINTER CONTROLS
     canvas.addEventListener('pointerdown', (e) => {
       if (mode !== 'PLAY') return;
       const rect = canvas.getBoundingClientRect();
@@ -566,24 +534,14 @@
         if (px < canvas.width / 2) carLane = Math.max(0, carLane - 1);
         else carLane = Math.min(2, carLane + 1);
         sfx('hit');
-      } else if (activeGame === 2) {
-        ship.tx = px;
-      } else if (activeGame === 3) {
-        pad.x = Math.max(0, Math.min(canvas.width - pad.w, px - pad.w / 2));
-      } else if (activeGame === 4) {
+      } else if (activeGame === 2) { ship.tx = px; }
+      else if (activeGame === 3) { pad.x = Math.max(0, Math.min(canvas.width - pad.w, px - pad.w / 2)); }
+      else if (activeGame === 4) {
         const top = stack[stack.length - 1];
         const diff = mover.x - top.x;
-        if (Math.abs(diff) >= top.w) {
-          spawnParticles(mover.x + mover.w/2, mover.y, mover.color, 25);
-          endGame();
-          return;
-        }
-        if (Math.abs(diff) < 5) {
-          // Perfect snap
-          mover.x = top.x;
-          sfx('hit');
-          spawnParticles(mover.x + mover.w/2, mover.y, '#ffffff', 20);
-        } else {
+        if (Math.abs(diff) >= top.w) { spawnParticles(mover.x + mover.w/2, mover.y, mover.color, 25); endGame(); return; }
+        if (Math.abs(diff) < 5) { mover.x = top.x; sfx('hit'); spawnParticles(mover.x + mover.w/2, mover.y, '#ffffff', 20); }
+        else {
           mover.w = top.w - Math.abs(diff);
           mover.x = diff > 0 ? top.x + diff : top.x;
           sfx('hit');
@@ -605,7 +563,6 @@
       if (activeGame === 3) pad.x = Math.max(0, Math.min(canvas.width - pad.w, px - pad.w / 2));
     });
 
-    // MAIN RENDER LOOP
     function tick() {
       frame++;
       ctx.save();
@@ -617,7 +574,6 @@
 
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-      // Ambient Starfield
       ctx.fillStyle = 'rgba(255,255,255,0.4)';
       for (let st of stars) {
         st.y += st.s * (mode === 'PLAY' ? 1.5 : 0.4);
@@ -632,7 +588,6 @@
         else if (activeGame === 4) renderTowerArchitect();
       }
 
-      // Render Particles
       for (let i = particles.length - 1; i >= 0; i--) {
         let p = particles[i];
         p.x += p.vx; p.y += p.vy; p.life -= 0.03;
@@ -642,61 +597,41 @@
         ctx.shadowColor = p.color; ctx.shadowBlur = 10;
         ctx.fillRect(p.x, p.y, p.size, p.size);
       }
-      ctx.globalAlpha = 1;
-      ctx.shadowBlur = 0;
+      ctx.globalAlpha = 1; ctx.shadowBlur = 0;
       ctx.restore();
       requestAnimationFrame(tick);
     }
 
-    // 1. CYBER VELOCITY 3D TUNNEL RACER
     function render3DRacer() {
       const w = canvas.width, h = canvas.height;
-      const horizonY = h * 0.28;
-      const vanishX = w * 0.5;
-
-      // Horizon Glow
+      const horizonY = h * 0.28, vanishX = w * 0.5;
       const grad = ctx.createLinearGradient(0, horizonY - 60, 0, h);
       grad.addColorStop(0, 'rgba(255, 0, 85, 0.25)');
       grad.addColorStop(0.3, 'rgba(0, 240, 255, 0.08)');
       grad.addColorStop(1, 'rgba(4, 6, 13, 0.95)');
-      ctx.fillStyle = grad;
-      ctx.fillRect(0, horizonY, w, h - horizonY);
+      ctx.fillStyle = grad; ctx.fillRect(0, horizonY, w, h - horizonY);
 
-      // Sun
-      ctx.fillStyle = '#ff0055';
-      ctx.shadowColor = '#ff0055'; ctx.shadowBlur = 30;
-      ctx.beginPath(); ctx.arc(vanishX, horizonY, 45, Math.PI, 0); ctx.fill();
-      ctx.shadowBlur = 0;
+      ctx.fillStyle = '#ff0055'; ctx.shadowColor = '#ff0055'; ctx.shadowBlur = 30;
+      ctx.beginPath(); ctx.arc(vanishX, horizonY, 45, Math.PI, 0); ctx.fill(); ctx.shadowBlur = 0;
 
-      // 3D Perspective Road Lines
-      ctx.strokeStyle = 'rgba(0, 240, 255, 0.5)';
-      ctx.lineWidth = 2;
-      const roadHalfBottom = w * 0.46;
-      const roadHalfTop = w * 0.06;
-
+      ctx.strokeStyle = 'rgba(0, 240, 255, 0.5)'; ctx.lineWidth = 2;
+      const roadHalfBottom = w * 0.46, roadHalfTop = w * 0.06;
       [-1, -0.33, 0.33, 1].forEach(ratio => {
-        ctx.beginPath();
-        ctx.moveTo(vanishX + roadHalfTop * ratio, horizonY);
-        ctx.lineTo(vanishX + roadHalfBottom * ratio, h);
-        ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(vanishX + roadHalfTop * ratio, horizonY); ctx.lineTo(vanishX + roadHalfBottom * ratio, h); ctx.stroke();
       });
 
-      // Moving Horizontal Grid Bars
       const gridOffset = (frame * roadSpeed * 12) % 1;
       for (let i = 0; i < 10; i++) {
-        let z = (i + gridOffset) / 10;
-        let persp = z * z;
+        let z = (i + gridOffset) / 10, persp = z * z;
         let y = horizonY + (h - horizonY) * persp;
         let hw = roadHalfTop + (roadHalfBottom - roadHalfTop) * persp;
         ctx.strokeStyle = `rgba(0, 240, 255, ${persp * 0.5})`;
         ctx.beginPath(); ctx.moveTo(vanishX - hw, y); ctx.lineTo(vanishX + hw, y); ctx.stroke();
       }
 
-      // Spawn Obstacles
       if (frame % Math.max(24, 55 - Math.floor(score/2)) === 0) {
         roadObs.push({ lane: Math.floor(Math.random()*3), z: 0.02 });
       }
-
       roadSpeed = 0.015 + Math.min(0.02, score * 0.0003);
 
       for (let i = roadObs.length - 1; i >= 0; i--) {
@@ -706,258 +641,29 @@
         let y = horizonY + (h - horizonY) * persp;
         let hw = roadHalfTop + (roadHalfBottom - roadHalfTop) * persp;
         let laneOffset = (ob.lane - 1) * 0.66;
-        let ox = vanishX + hw * laneOffset;
-        let ow = hw * 0.52;
-        let oh = 36 * persp;
+        let ox = vanishX + hw * laneOffset, ow = hw * 0.52, oh = 36 * persp;
 
-        // Draw 3D Plasma Barrier
-        ctx.fillStyle = '#ff0055';
-        ctx.shadowColor = '#ff0055'; ctx.shadowBlur = 15;
+        ctx.fillStyle = '#ff0055'; ctx.shadowColor = '#ff0055'; ctx.shadowBlur = 15;
         ctx.fillRect(ox - ow/2, y - oh, ow, oh);
-        ctx.strokeStyle = '#fff'; ctx.lineWidth = 1.5;
-        ctx.strokeRect(ox - ow/2, y - oh, ow, oh);
-        ctx.shadowBlur = 0;
+        ctx.strokeStyle = '#fff'; ctx.lineWidth = 1.5; ctx.strokeRect(ox - ow/2, y - oh, ow, oh); ctx.shadowBlur = 0;
 
-        // Collision at player Z
-        if (ob.z > 0.88 && ob.z < 0.98 && ob.lane === carLane) {
-          spawnParticles(ox, y, '#ff0055', 30);
-          endGame();
-        }
-        if (ob.z >= 1.05) {
-          roadObs.splice(i, 1);
-          score++;
-          document.getElementById('hud-score').innerText = score;
-        }
+        if (ob.z > 0.88 && ob.z < 0.98 && ob.lane === carLane) { spawnParticles(ox, y, '#ff0055', 30); endGame(); }
+        if (ob.z >= 1.05) { roadObs.splice(i, 1); score++; document.getElementById('hud-score').innerText = score; }
       }
 
-      // Player Cyber Car
       const targetX = vanishX + roadHalfBottom * ((carLane - 1) * 0.66);
       carVisualX += (targetX - carVisualX) * 0.25;
       const cy = h - 75;
 
-      // Car Chassis
-      ctx.fillStyle = '#00f0ff';
-      ctx.shadowColor = '#00f0ff'; ctx.shadowBlur = 20;
-      ctx.beginPath();
-      ctx.moveTo(carVisualX - 26, cy + 25);
-      ctx.lineTo(carVisualX - 18, cy - 10);
-      ctx.lineTo(carVisualX + 18, cy - 10);
-      ctx.lineTo(carVisualX + 26, cy + 25);
-      ctx.closePath(); ctx.fill();
-
-      // Rear Thrusters
-      ctx.fillStyle = '#ff0055';
-      ctx.fillRect(carVisualX - 18, cy + 22, 10, 6);
-      ctx.fillRect(carVisualX + 8, cy + 22, 10, 6);
-      ctx.shadowBlur = 0;
+      ctx.fillStyle = '#00f0ff'; ctx.shadowColor = '#00f0ff'; ctx.shadowBlur = 20;
+      ctx.beginPath(); ctx.moveTo(carVisualX - 26, cy + 25); ctx.lineTo(carVisualX - 18, cy - 10); ctx.lineTo(carVisualX + 18, cy - 10); ctx.lineTo(carVisualX + 26, cy + 25); ctx.closePath(); ctx.fill();
+      ctx.fillStyle = '#ff0055'; ctx.fillRect(carVisualX - 18, cy + 22, 10, 6); ctx.fillRect(carVisualX + 8, cy + 22, 10, 6); ctx.shadowBlur = 0;
     }
 
-    // 2. STAR VANGUARD (SPACE SHOOTER)
     function renderStarVanguard() {
       ship.x += (ship.tx - ship.x) * 0.22;
       ship.x = Math.max(25, Math.min(canvas.width - 25, ship.x));
-
-      // Auto-Fire Twin Lasers
-      if (frame % 11 === 0) {
-        lasers.push({ x: ship.x - 12, y: ship.y - 15 });
-        lasers.push({ x: ship.x + 12, y: ship.y - 15 });
-        sfx('laser');
-      }
-
-      // Spawn Enemy Drones
+      if (frame % 11 === 0) { lasers.push({ x: ship.x - 12, y: ship.y - 15 }); lasers.push({ x: ship.x + 12, y: ship.y - 15 }); sfx('laser'); }
       if (frame % Math.max(20, 48 - Math.floor(score/3)) === 0) {
-        enemies.push({
-          x: 30 + Math.random() * (canvas.width - 60),
-          y: -30, vy: 2.5 + Math.random()*2 + score*0.04,
-          hp: 2, r: 18
-        });
-      }
-
-      // Update Lasers
-      ctx.fillStyle = '#00f0ff';
-      ctx.shadowColor = '#00f0ff'; ctx.shadowBlur = 10;
-      for (let i = lasers.length - 1; i >= 0; i--) {
-        let l = lasers[i];
-        l.y -= 11;
-        ctx.fillRect(l.x - 2, l.y, 4, 16);
-        if (l.y < -20) lasers.splice(i, 1);
-      }
-
-      // Update Enemies
-      for (let i = enemies.length - 1; i >= 0; i--) {
-        let en = enemies[i];
-        en.y += en.vy;
-
-        // Draw Alien Fighter
-        ctx.fillStyle = '#ff0055';
-        ctx.shadowColor = '#ff0055'; ctx.shadowBlur = 15;
-        ctx.beginPath();
-        ctx.moveTo(en.x, en.y + en.r);
-        ctx.lineTo(en.x - en.r, en.y - en.r);
-        ctx.lineTo(en.x, en.y - en.r*0.4);
-        ctx.lineTo(en.x + en.r, en.y - en.r);
-        ctx.closePath(); ctx.fill();
-
-        // Laser hit check
-        for (let j = lasers.length - 1; j >= 0; j--) {
-          let l = lasers[j];
-          if (Math.hypot(l.x - en.x, l.y - en.y) < en.r + 6) {
-            lasers.splice(j, 1);
-            en.hp--;
-            spawnParticles(l.x, l.y, '#00f0ff', 6);
-            if (en.hp <= 0) {
-              spawnParticles(en.x, en.y, '#ff0055', 22);
-              sfx('boom');
-              shake = 6;
-              enemies.splice(i, 1);
-              score += 2;
-              document.getElementById('hud-score').innerText = score;
-              break;
-            }
-          }
-        }
-
-        if (en && Math.hypot(ship.x - en.x, ship.y - en.y) < en.r + 16) {
-          spawnParticles(ship.x, ship.y, '#00f0ff', 35);
-          endGame();
-        } else if (en && en.y > canvas.height + 30) {
-          enemies.splice(i, 1);
-        }
-      }
-
-      // Draw Player Starfighter
-      ctx.fillStyle = '#ffffff';
-      ctx.shadowColor = '#00f0ff'; ctx.shadowBlur = 20;
-      ctx.beginPath();
-      ctx.moveTo(ship.x, ship.y - 24);
-      ctx.lineTo(ship.x - 22, ship.y + 18);
-      ctx.lineTo(ship.x, ship.y + 10);
-      ctx.lineTo(ship.x + 22, ship.y + 18);
-      ctx.closePath(); ctx.fill();
-      ctx.shadowBlur = 0;
-    }
-
-    // 3. PLASMA BREAKER
-    function renderPlasmaBreaker() {
-      orb.x += orb.vx; orb.y += orb.vy;
-      if (orb.x < orb.r || orb.x > canvas.width - orb.r) { orb.vx *= -1; sfx('hit'); }
-      if (orb.y < orb.r) { orb.vy *= -1; sfx('hit'); }
-
-      // Paddle bounce with angle control
-      const py = canvas.height - 55;
-      if (orb.vy > 0 && orb.y + orb.r >= py && orb.y - orb.r <= py + pad.h && orb.x >= pad.x && orb.x <= pad.x + pad.w) {
-        const hitPos = (orb.x - (pad.x + pad.w/2)) / (pad.w/2);
-        orb.vx = hitPos * 5.5;
-        orb.vy = -Math.abs(orb.vy) * 1.02;
-        sfx('hit');
-        spawnParticles(orb.x, py, '#00f0ff', 10);
-      }
-
-      if (orb.y > canvas.height + 20) endGame();
-
-      // Render Blocks
-      let remaining = 0;
-      for (let b of blocks) {
-        if (!b.alive) continue;
-        remaining++;
-        if (orb.x + orb.r > b.x && orb.x - orb.r < b.x + b.w && orb.y + orb.r > b.y && orb.y - orb.r < b.y + b.h) {
-          b.alive = false;
-          orb.vy *= -1;
-          score += 3;
-          document.getElementById('hud-score').innerText = score;
-          sfx('boom');
-          shake = 5;
-          spawnParticles(b.x + b.w/2, b.y + b.h/2, b.color, 16);
-        }
-        ctx.fillStyle = b.color;
-        ctx.shadowColor = b.color; ctx.shadowBlur = 12;
-        ctx.fillRect(b.x, b.y, b.w, b.h);
-      }
-      if (remaining === 0) launchGame(3);
-
-      // Render Paddle & Energy Orb
-      ctx.fillStyle = '#00f0ff'; ctx.shadowColor = '#00f0ff'; ctx.shadowBlur = 15;
-      ctx.fillRect(pad.x, py, pad.w, pad.h);
-
-      ctx.fillStyle = '#ffffff'; ctx.shadowColor = '#ffffff'; ctx.shadowBlur = 20;
-      ctx.beginPath(); ctx.arc(orb.x, orb.y, orb.r, 0, Math.PI*2); ctx.fill();
-      ctx.shadowBlur = 0;
-    }
-
-    // 4. TOWER ARCHITECT
-    function renderTowerArchitect() {
-      ctx.save();
-      ctx.translate(0, camY);
-      for (let b of stack) {
-        ctx.fillStyle = b.color;
-        ctx.shadowColor = b.color; ctx.shadowBlur = 14;
-        ctx.fillRect(b.x, b.y, b.w, 25);
-        ctx.fillStyle = 'rgba(255,255,255,0.25)';
-        ctx.fillRect(b.x, b.y, b.w, 6);
-      }
-      if (mover) {
-        mover.x += mover.vx * mover.dir;
-        if (mover.x <= 0 || mover.x + mover.w >= canvas.width) mover.dir *= -1;
-        ctx.fillStyle = mover.color;
-        ctx.shadowColor = mover.color; ctx.shadowBlur = 20;
-        ctx.fillRect(mover.x, mover.y, mover.w, 25);
-      }
-      ctx.restore();
-    }
-
-    // WALLET & MONETAG FUNCTIONS
-    function convertTik() {
-      if (data.tik < 100) {
-        toast(lang === 'SW' ? 'Unahitaji angalau Tiketi 100!' : 'Need at least 100 Tickets!');
-        return;
-      }
-      data.tik -= 100;
-      data.usd += 0.10;
-      save();
-      toast(lang === 'SW' ? 'Umebadili 100 🎫 kuwa $0.10!' : 'Converted 100 🎫 to $0.10!');
-    }
-
-    function requestPayout() {
-      const net = document.getElementById('inp-net').value;
-      const ph = document.getElementById('inp-ph').value.trim();
-      const amt = parseFloat(document.getElementById('inp-am').value);
-      if (ph.length < 9) { toast(lang === 'SW' ? 'Weka namba sahihi ya simu!' : 'Enter a valid phone number!'); return; }
-      if (isNaN(amt) || amt < 5.00) { toast(lang === 'SW' ? 'Kima cha chini cha kutoa ni $5.00!' : 'Minimum payout is $5.00!'); return; }
-      if (amt > data.usd) { toast(lang === 'SW' ? 'Salio lako halitoshi!' : 'Insufficient USD balance!'); return; }
-
-      data.usd -= amt;
-      data.payouts.unshift({ id: Date.now(), net, ph, amt: amt.toFixed(2), status: 'PENDING' });
-      document.getElementById('inp-am').value = '';
-      save();
-      toast(lang === 'SW' ? 'Ombi la malipo limetumwa kikamilifu!' : 'Payout request submitted!');
-    }
-
-    function markPaid(id) {
-      const p = data.payouts.find(x => x.id === id);
-      if (p) { p.status = 'PAID'; save(); toast('Payment marked as PAID ✓'); }
-    }
-
-    function watchAd() {
-      if (data.ads >= 15) {
-        toast(lang === 'SW' ? 'Umefikisha kikomo cha matangazo leo (15/15)!' : 'Daily ad limit reached (15/15)!');
-        return;
-      }
-      const fn = window['show_3573868'];
-      if (typeof fn === 'function') {
-        fn().then(() => {
-          data.tik += 10; data.ads++; data.rev += 0.0025;
-          save(); toast('+10 🎫 Added to Wallet!');
-        }).catch(() => toast('Ad not ready, try again.'));
-        return;
-      }
-      setTimeout(() => {
-        data.tik += 10; data.ads++; data.rev += 0.0025;
-        save(); toast('+10 🎫 Added (Preview Mode)!');
-      }, 800);
-    }
-
-    load();
-    requestAnimationFrame(tick);
-  </script>
-</body>
-</html>
+        enemies.push({ x: 30 + Math.random() * (canvas.width - 60), y: -30, vy: 2.5 + Math.random()*2 + score*0.04, hp: 2, r: 18 });
+      
