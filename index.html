@@ -47,6 +47,12 @@ footer{text-align:center;padding:20px;color:#777}
 </section>
 
 <h2>🔥 CHOOSE YOUR GAME</h2>
+<div class="toolbar">
+<input id="gameSearch"
+type="search"
+placeholder="🔎 Search your favourite game...">
+</div>
+
 <div class="games" id="games"></div>
 <footer>NEON ARCADE · PLAY · ENJOY · REPEAT</footer>
 
@@ -92,11 +98,37 @@ function wallet(){
 $("tickets").textContent=tickets;
 $("best").textContent=best;
 }
-$("games").innerHTML=games.map((g,i)=>`
-<button class="game" onclick="openGame(${i})">
-<div class="art" style="--a:${g[3]};--b:${g[4]}">${g[1]}</div>
-<div class="info"><strong>${g[0]}</strong><p>${g[2]} GAME</p></div>
-</button>`).join("");
+function renderGames(query=""){
+ const q=query.toLowerCase().trim();
+
+ const filtered=games
+ .map((g,i)=>({g,i}))
+ .filter(x=>
+  x.g[0].toLowerCase().includes(q) ||
+  x.g[2].toLowerCase().includes(q)
+ );
+
+ $("games").innerHTML=filtered.length
+ ?filtered.map(({g,i})=>`
+  <button class="game" onclick="openGame(${i})">
+   <div class="art"
+   style="--a:${g[3]};--b:${g[4]}">
+   ${g[1]}
+   </div>
+   <div class="info">
+    <strong>${g[0]}</strong>
+    <p>${g[2].toUpperCase()} GAME · PLAY NOW</p>
+   </div>
+  </button>
+ `).join("")
+ :`<div class="no-results">No games found. Try another name.</div>`;
+}
+
+renderGames();
+
+$("gameSearch").addEventListener("input",e=>{
+ renderGames(e.target.value);
+});
 
 function openGame(n){
 id=n;
