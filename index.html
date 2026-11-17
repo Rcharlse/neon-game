@@ -3,9 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <script src="https://alwingulla.com/88/tag.min.js" data-zone="3573868" async data-cfasync="false"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <meta name="theme-color" content="#04060d" />
-  <title>CYBER ARENA TSH - EA Gaming</title>
+  <title>CYBER ARENA 3D - Pro WebGL Gaming</title>
   <style>
     :root {
       --bg: #04060d;
@@ -37,14 +38,11 @@
     }
     .balances { display: flex; gap: 8px; }
     .pill {
-      display: flex; align-items: center; gap: 5px; padding: 5px 11px;
-      border-radius: 99px; font-size: 12px; font-weight: 800; cursor: pointer;
+      display: flex; align-items: center; gap: 5px; padding: 5px 14px;
+      border-radius: 99px; font-size: 13px; font-weight: 800;
       background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.12);
-      transition: transform 0.15s;
     }
-    .pill:active { transform: scale(0.95); }
     .pill.tik { color: var(--gold); border-color: rgba(255, 204, 0, 0.35); }
-    .pill.tsh { color: var(--emerald); border-color: rgba(0, 255, 136, 0.35); }
 
     .controls-top { display: flex; gap: 6px; align-items: center; }
     .chip-btn {
@@ -53,26 +51,27 @@
     }
     .chip-btn.owner { background: rgba(255,255,255,0.06); border-color: rgba(255,255,255,0.15); color: var(--muted); }
 
-    /* CANVAS CONTAINER */
-    #canvas-box { position: relative; flex: 1; width: 100%; height: 100%; display: none; }
+    /* 3D WEBGL CONTAINER */
+    #canvas-box { position: relative; flex: 1; width: 100%; height: 100%; display: none; background: #04060d; }
     #canvas-box.active { display: block; }
-    canvas { width: 100%; height: 100%; display: block; touch-action: none; background: #04060d; }
+    #gl-container { width: 100%; height: 100%; touch-action: none; }
 
     /* IN-GAME HUD */
     .hud {
-      position: absolute; top: 10px; left: 0; width: 100%; padding: 0 20px;
+      position: absolute; top: 12px; left: 0; width: 100%; padding: 0 20px;
       display: flex; justify-content: space-between; align-items: center;
       pointer-events: none; z-index: 15;
     }
     .score-box {
-      font-size: 32px; font-weight: 900; letter-spacing: 1px;
+      font-size: 34px; font-weight: 900; letter-spacing: 1px;
       background: linear-gradient(180deg, #ffffff 0%, #94a3b8 100%);
       -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-      filter: drop-shadow(0 2px 10px rgba(0, 240, 255, 0.4));
+      filter: drop-shadow(0 2px 10px rgba(0, 240, 255, 0.6));
     }
     .exit-btn {
-      pointer-events: auto; background: rgba(255, 0, 85, 0.2); border: 1px solid var(--magenta);
-      color: #fff; padding: 6px 12px; border-radius: 8px; font-size: 11px; font-weight: 800; cursor: pointer;
+      pointer-events: auto; background: rgba(255, 0, 85, 0.25); border: 1px solid var(--magenta);
+      color: #fff; padding: 6px 14px; border-radius: 8px; font-size: 11px; font-weight: 800; cursor: pointer;
+      backdrop-filter: blur(4px);
     }
 
     /* OVERLAY SCREENS */
@@ -139,28 +138,12 @@
     .btn:active { transform: scale(0.97); }
     .btn-cyan { background: linear-gradient(135deg, #00f0ff, #0077ff); color: #000; box-shadow: 0 4px 15px rgba(0, 240, 255, 0.3); }
     .btn-magenta { background: linear-gradient(135deg, #ff0055, #b3003b); color: #fff; box-shadow: 0 4px 15px rgba(255, 0, 85, 0.3); }
-    .btn-emerald { background: linear-gradient(135deg, #00ff88, #009955); color: #000; box-shadow: 0 4px 15px rgba(0, 255, 136, 0.3); }
-    .btn-gold { background: linear-gradient(135deg, #ffcc00, #e69900); color: #000; }
     .btn-ghost { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.15); color: var(--text); }
 
-    /* FORMS & PANELS */
     .glass-panel {
       width: 100%; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1);
       border-radius: 14px; padding: 14px; margin-bottom: 12px;
     }
-    label { display: block; font-size: 11px; color: var(--muted); margin-bottom: 4px; font-weight: 600; }
-    input, select {
-      width: 100%; padding: 10px 12px; margin-bottom: 10px; border-radius: 8px;
-      background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.15);
-      color: #fff; font-size: 13px; user-select: text; -webkit-user-select: text;
-    }
-    .req-row {
-      display: flex; justify-content: space-between; align-items: center;
-      padding: 10px; background: rgba(0,0,0,0.4); border-radius: 8px;
-      margin-bottom: 6px; border-left: 3px solid var(--gold); font-size: 11px;
-    }
-    .req-row.paid { border-left-color: var(--emerald); opacity: 0.65; }
-    .pay-badge { background: var(--emerald); color: #000; border: none; padding: 4px 8px; border-radius: 6px; font-weight: 800; font-size: 10px; cursor: pointer; }
 
     #toast {
       position: absolute; top: 70px; left: 50%; transform: translateX(-50%) translateY(-15px);
@@ -176,8 +159,7 @@
   <div id="app">
     <header>
       <div class="balances">
-        <div class="pill tik" onclick="openScreen('wallet')">🎫 <span id="ui-tik">100</span></div>
-        <div class="pill tsh" onclick="openScreen('wallet')">Tsh <span id="ui-tsh">20,000</span></div>
+        <div class="pill tik">🎫 <span id="ui-tik">100</span></div>
       </div>
       <div class="controls-top">
         <button class="chip-btn" onclick="toggleLang()" id="btn-lang">SW / EN</button>
@@ -185,19 +167,19 @@
       </div>
     </header>
 
-    <!-- CANVAS & IN-GAME HUD -->
+    <!-- 3D WEBGL CANVAS CONTAINER -->
     <div id="canvas-box">
       <div class="hud">
         <div class="score-box" id="hud-score">0</div>
         <button class="exit-btn" onclick="quitToMenu()">EXIT</button>
       </div>
-      <canvas id="canvas"></canvas>
+      <div id="gl-container"></div>
     </div>
 
     <!-- LOBBY / MAIN MENU -->
     <div class="screen" id="scr-menu">
-      <div class="hero-title">CYBER ARENA TSH</div>
-      <div class="hero-sub" id="txt-sub">Cheza michezo ya kisasa, kusanya tiketi nyingi na utoe pesa za Kitanzania (Tsh)</div>
+      <div class="hero-title">CYBER ARENA 3D</div>
+      <div class="hero-sub" id="txt-sub">Michezo halisi ya 3D WebGL yenye michoro ya kisasa!</div>
 
       <!-- DAILY CHALLENGE BANNER -->
       <div class="daily-banner">
@@ -212,39 +194,38 @@
         <div class="pro-card" style="--accent: #00f0ff;" onclick="launchGame(1)">
           <div class="card-info">
             <h3 id="g1-t">CYBER VELOCITY 3D</h3>
-            <p id="g1-d">Mbio za magari ya kasi kwenye barabara ya 3D</p>
+            <p id="g1-d">Endesha gari la 3D kwenye barabara yenye mwanga</p>
           </div>
-          <div class="card-tag" style="color:#00f0ff; background:rgba(0,240,255,0.15);">3D RACE</div>
+          <div class="card-tag" style="color:#00f0ff; background:rgba(0,240,255,0.15);">3D RACER</div>
         </div>
 
         <div class="pro-card" style="--accent: #ff0055;" onclick="launchGame(2)">
           <div class="card-info">
-            <h3 id="g2-t">STAR VANGUARD</h3>
-            <p id="g2-d">Vita ya anga za juu dhidi ya meli za adui</p>
+            <h3 id="g2-t">STAR VANGUARD 3D</h3>
+            <p id="g2-d">Vita ya anga za juu ya 3D dhidi ya meli za adui</p>
           </div>
-          <div class="card-tag" style="color:#ff0055; background:rgba(255,0,85,0.15);">SHOOTER</div>
+          <div class="card-tag" style="color:#ff0055; background:rgba(255,0,85,0.15);">3D SPACE</div>
         </div>
 
         <div class="pro-card" style="--accent: #ffcc00;" onclick="launchGame(3)">
           <div class="card-info">
-            <h3 id="g3-t">PLASMA BREAKER</h3>
-            <p id="g3-d">Vunja ngome za leza kwa mpira wa nishati</p>
+            <h3 id="g3-t">PLASMA BREAKER 3D</h3>
+            <p id="g3-d">Vunja matofali ya 3D kwa mpira wa nishati</p>
           </div>
-          <div class="card-tag" style="color:#ffcc00; background:rgba(255,204,0,0.15);">ARCADE</div>
+          <div class="card-tag" style="color:#ffcc00; background:rgba(255,204,0,0.15);">3D ARCADE</div>
         </div>
 
         <div class="pro-card" style="--accent: #00ff88;" onclick="launchGame(4)">
           <div class="card-info">
-            <h3 id="g4-t">TOWER ARCHITECT</h3>
-            <p id="g4-d">Jenga mnara mrefu wa vioo kwa umakini</p>
+            <h3 id="g4-t">TOWER ARCHITECT 3D</h3>
+            <p id="g4-d">Jenga mnara mrefu wa 3D kwa umakini mkubwa</p>
           </div>
-          <div class="card-tag" style="color:#00ff88; background:rgba(0,255,136,0.15);">SKILL</div>
+          <div class="card-tag" style="color:#00ff88; background:rgba(0,255,136,0.15);">3D TOWER</div>
         </div>
       </div>
 
       <div class="btn-row">
         <button class="btn btn-magenta" onclick="watchAd()" id="btn-ad">🎬 Tazama Tangazo (+50 🎫)</button>
-        <button class="btn btn-emerald" onclick="openScreen('wallet')" id="btn-wal">💵 Wallet & Withdraw</button>
       </div>
     </div>
 
@@ -255,78 +236,28 @@
       <div style="width:100%; max-width:300px; margin-top:10px;">
         <button class="btn btn-cyan" onclick="launchGame(activeGame)" id="btn-retry">Cheza Tena</button>
         <button class="btn btn-magenta" onclick="watchAd()" id="btn-over-ad">🎬 Pata Tiketi (+50 🎫)</button>
-        <button class="btn btn-emerald" onclick="openScreen('wallet')" id="btn-over-wd">💵 Toa Pesa (Withdraw)</button>
         <button class="btn btn-ghost" onclick="openScreen('menu')" id="btn-over-menu">Rudi Kwenye Michezo</button>
       </div>
-    </div>
-
-    <!-- WALLET & WITHDRAW -->
-    <div class="screen hidden" id="scr-wallet">
-      <div class="hero-title">WALLET YA KUTOA PESA</div>
-      <div class="hero-sub" id="w-sub">Kubadili tiketi 50 kunakupa Tsh 2,000! Kutoa ni Tsh 20,000 (ukitoa unalipia Tsh 5,000 ya kuendelea kucheza).</div>
-
-      <div class="glass-panel">
-        <div style="display:flex; justify-content:space-between; margin-bottom:12px;">
-          <div>
-            <span style="font-size:11px; color:var(--muted);" id="lbl-t">Tiketi Zako</span>
-            <div style="font-size:18px; font-weight:900; color:var(--gold);" id="w-tik">100 🎫</div>
-          </div>
-          <div style="text-align:right;">
-            <span style="font-size:11px; color:var(--muted);" id="lbl-c">Salio la Tsh</span>
-            <div style="font-size:18px; font-weight:900; color:var(--emerald);" id="w-tsh">Tsh 20,000</div>
-          </div>
-        </div>
-        <button class="btn btn-gold" style="padding:9px; font-size:11px;" onclick="convertTik()" id="btn-conv">Badili Tiketi 50 = Tsh 2,000</button>
-      </div>
-
-      <div class="glass-panel">
-        <label id="lbl-net">Chagua Mtandao wa Simu</label>
-        <select id="inp-net">
-          <option value="M-Pesa TZ">M-Pesa (Vodacom Tanzania)</option>
-          <option value="Tigo Pesa">Tigo Pesa / Mixx by Yas (Tanzania)</option>
-          <option value="Airtel Money">Airtel Money (Tanzania)</option>
-          <option value="Halopesa">Halopesa (Tanzania)</option>
-          <option value="M-Pesa KE">M-Pesa (Safaricom Kenya)</option>
-          <option value="MTN MoMo">MTN Mobile Money (Uganda)</option>
-        </select>
-
-        <label id="lbl-ph">Namba ya Simu ya Kupokea Pesa</label>
-        <input type="tel" id="inp-ph" placeholder="Mfano: 0755 123 456">
-
-        <label id="lbl-am">Kiasi cha Kutoa (Tsh 20,000 au zaidi)</label>
-        <input type="number" id="inp-am" placeholder="20000" step="1000" min="20000">
-
-        <!-- KISANDUKU CHA ADA YA 5,000 -->
-        <div style="background: rgba(255,204,0,0.08); border: 1px dashed var(--gold); border-radius: 8px; padding: 8px; margin-bottom: 10px; font-size: 11px; color: #fff;">
-          <input type="checkbox" id="chk-renew" checked style="width:auto; margin-right:5px;">
-          <label for="chk-renew" style="display:inline; color:var(--gold);">Kata Tsh 5,000 ya Ada ya Kuendelea Kucheza (Ubakize Tsh 15,000 safi)</label>
-        </div>
-
-        <button class="btn btn-emerald" onclick="requestPayout()" id="btn-req">Tuma Ombi la Tsh 20,000</button>
-      </div>
-
-      <button class="btn btn-ghost" onclick="openScreen('menu')" id="btn-w-back">Rudi Nyuma</button>
     </div>
 
     <!-- OWNER ADMIN -->
     <div class="screen hidden" id="scr-owner">
       <div class="hero-title">ADMIN DASHBOARD</div>
-      <div class="hero-sub">Mapato ya Matangazo (Monetag) & Maombi ya Wachezaji</div>
+      <div class="hero-sub">Takwimu za Mapato ya Matangazo (Monetag Zone 3573868)</div>
 
-      <div class="glass-panel" style="display:flex; justify-content:space-between;">
+      <div class="glass-panel" style="display:flex; justify-content:space-between; align-items:center;">
         <div>
-          <span style="font-size:11px; color:var(--muted);">Mapato (Zone 3573868)</span>
-          <div style="font-size:18px; font-weight:900; color:var(--emerald);" id="adm-rev">$0.0000</div>
+          <span style="font-size:11px; color:var(--muted);">Mapato ya Leo (Est. Revenue)</span>
+          <div style="font-size:22px; font-weight:900; color:var(--emerald);" id="adm-rev">$0.0000</div>
         </div>
         <div style="text-align:right;">
-          <span style="font-size:11px; color:var(--muted);">Matangazo Leo</span>
-          <div style="font-size:18px; font-weight:900; color:var(--cyan);" id="adm-ads">0 / 15</div>
+          <span style="font-size:11px; color:var(--muted);">Matangazo Yametazamwa</span>
+          <div style="font-size:22px; font-weight:900; color:var(--cyan);" id="adm-ads">0 / 25</div>
         </div>
       </div>
 
-      <div class="glass-panel" style="max-height:220px; overflow-y:auto;">
-        <label style="color:var(--gold); margin-bottom:8px;">MAOMBI YA WITHDRAW YA WACHEZAJI</label>
-        <div id="adm-list"></div>
+      <div class="glass-panel" style="text-align:center; padding:16px;">
+        <p style="font-size:11px; color:var(--muted); line-height:1.5;">Mfumo wako upo kwenye injini ya <strong>Real 3D WebGL</strong>. Unalipwa moja kwa moja na Monetag kupitia Zone ID yako kadri wachezaji wanavyocheza na kutazama matangazo.</p>
       </div>
 
       <button class="btn btn-ghost" onclick="openScreen('menu')">Funga Admin</button>
@@ -344,7 +275,7 @@
       }
     };
 
-    const ADMIN_PIN = "1234"; // Weka namba unayotaka hapa kama nenosiri lako la Admin
+    const ADMIN_PIN = "1234";
     function promptAdminPin() {
       const pin = prompt("Weka Password ya Admin kufungua Dashboard:");
       if (pin === ADMIN_PIN) {
@@ -352,14 +283,6 @@
       } else if (pin !== null) {
         toast("Password sio sahihi!");
       }
-    }
-
-    const canvas = document.getElementById('canvas');
-    const ctx = canvas.getContext('2d');
-
-    function resizeCanvas() {
-      canvas.width = canvas.parentElement.clientWidth;
-      canvas.height = canvas.parentElement.clientHeight - 54;
     }
 
     // AUDIO ENGINE
@@ -375,57 +298,46 @@
         const now = actx.currentTime;
         if (type === 'laser') {
           o.type = 'sawtooth'; o.frequency.setValueAtTime(880, now); o.frequency.exponentialRampToValueAtTime(110, now + 0.12);
-          g.gain.setValueAtTime(0.15, now); g.gain.exponentialRampToValueAtTime(0.01, now + 0.12);
+          g.gain.setValueAtTime(0.12, now); g.gain.exponentialRampToValueAtTime(0.01, now + 0.12);
           o.start(now); o.stop(now + 0.12);
         } else if (type === 'boom') {
           o.type = 'square'; o.frequency.setValueAtTime(140, now); o.frequency.exponentialRampToValueAtTime(30, now + 0.25);
-          g.gain.setValueAtTime(0.25, now); g.gain.exponentialRampToValueAtTime(0.01, now + 0.25);
+          g.gain.setValueAtTime(0.22, now); g.gain.exponentialRampToValueAtTime(0.01, now + 0.25);
           o.start(now); o.stop(now + 0.25);
         } else if (type === 'hit') {
           o.type = 'triangle'; o.frequency.setValueAtTime(520, now); o.frequency.exponentialRampToValueAtTime(980, now + 0.08);
-          g.gain.setValueAtTime(0.18, now); g.gain.exponentialRampToValueAtTime(0.01, now + 0.08);
+          g.gain.setValueAtTime(0.15, now); g.gain.exponentialRampToValueAtTime(0.01, now + 0.08);
           o.start(now); o.stop(now + 0.08);
         }
       } catch(e) {}
     }
 
     let lang = 'SW';
-    let data = { tik: 100, tsh: 20000, ads: 0, rev: 0, payouts: [], lastDailyDate: '' };
+    let data = { tik: 100, ads: 0, rev: 0, lastDailyDate: '' };
     const i18n = {
       SW: {
-        sub: "Cheza michezo ya kisasa, kusanya tiketi nyingi na utoe pesa za Kitanzania (Tsh)",
-        g1t: "CYBER VELOCITY 3D", g1d: "Mbio za magari ya kasi kwenye barabara ya 3D",
-        g2t: "STAR VANGUARD", g2d: "Vita ya anga za juu dhidi ya meli za adui",
-        g3t: "PLASMA BREAKER", g3d: "Vunja ngome za leza kwa mpira wa nishati",
-        g4t: "TOWER ARCHITECT", g4d: "Jenga mnara mrefu wa vioo kwa umakini",
-        ad: "🎬 Tazama Tangazo (+50 🎫)", wal: "💵 Wallet & Withdraw",
-        retry: "Cheza Tena", overAd: "🎬 Pata Tiketi (+50 🎫)", overWd: "💵 Toa Pesa (Withdraw)", overMenu: "Rudi Kwenye Michezo",
-        wSub: "Kubadili tiketi 50 kunakupa Tsh 2,000! Kutoa ni Tsh 20,000 (ukitoa unalipia Tsh 5,000 ya kuendelea kucheza).",
-        lblT: "Tiketi Zako", lblC: "Salio la Tsh", conv: "Badili Tiketi 50 = Tsh 2,000",
-        lblNet: "Chagua Mtandao wa Simu", lblPh: "Namba ya Simu ya Kupokea Pesa", lblAm: "Kiasi cha Kutoa (Tsh 20,000 min)",
-        req: "Tuma Ombi la Tsh 20,000", back: "Rudi Nyuma",
+        sub: "Michezo halisi ya 3D WebGL yenye michoro ya kisasa!",
+        g1t: "CYBER VELOCITY 3D", g1d: "Endesha gari la 3D kwenye barabara yenye mwanga",
+        g2t: "STAR VANGUARD 3D", g2d: "Vita ya anga za juu ya 3D dhidi ya meli za adui",
+        g3t: "PLASMA BREAKER 3D", g3d: "Vunja matofali ya 3D kwa mpira wa nishati",
+        g4t: "TOWER ARCHITECT 3D", g4d: "Jenga mnara mrefu wa 3D kwa umakini mkubwa",
+        ad: "🎬 Tazama Tangazo (+50 🎫)",
+        retry: "Cheza Tena", overAd: "🎬 Pata Tiketi (+50 🎫)", overMenu: "Rudi Kwenye Michezo",
         dTitle: "⭐ DAILY CHALLENGE", dDesc: "Ingia leo upate zawadi ya Tiketi 100 za bure!", dBtn: "Dai 🎫 100", dClaimed: "Imedaiwa ✓"
       },
       EN: {
-        sub: "Play modern arcade games, collect tickets & withdraw Tanzanian Shillings (Tsh)",
-        g1t: "CYBER VELOCITY 3D", g1d: "High-speed 3D tunnel synthwave racer",
-        g2t: "STAR VANGUARD", g2d: "Deep space starfighter laser combat",
-        g3t: "PLASMA BREAKER", g3d: "Shatter neon shields with energy physics",
-        g4t: "TOWER ARCHITECT", g4d: "Precision glass tower stacking",
-        ad: "🎬 Watch Ad (+50 🎫)", wal: "💵 Wallet & Withdraw",
-        retry: "Play Again", overAd: "🎬 Earn +50 🎫", overWd: "💵 Withdraw Cash", overMenu: "Back to Lobby",
-        wSub: "Convert 50 tickets to Tsh 2,000! Withdraw Tsh 20,000 (minus Tsh 5,000 renewal fee).",
-        lblT: "Your Tickets", lblC: "Tsh Balance", conv: "Convert 50 Tickets = Tsh 2,000",
-        lblNet: "Select Mobile Network", lblPh: "Mobile Phone Number", lblAm: "Withdraw Amount (Tsh 20,000 Min)",
-        req: "Submit Payout Request", back: "Back",
+        sub: "True 3D WebGL Arcade games with modern lighting & physics!",
+        g1t: "CYBER VELOCITY 3D", g1d: "Drive a 3D cyber car down a glowing neon highway",
+        g2t: "STAR VANGUARD 3D", g2d: "3D deep-space starfighter combat against alien fleets",
+        g3t: "PLASMA BREAKER 3D", g3d: "Shatter 3D neon bricks with an energy sphere",
+        g4t: "TOWER ARCHITECT 3D", g4d: "Stack rotating 3D glass blocks with precision",
+        ad: "🎬 Watch Ad (+50 🎫)",
+        retry: "Play Again", overAd: "🎬 Earn +50 🎫", overMenu: "Back to Lobby",
         dTitle: "⭐ DAILY CHALLENGE", dDesc: "Log in today to claim 100 free Tickets!", dBtn: "Claim 🎫 100", dClaimed: "Claimed ✓"
       }
     };
 
-    function toggleLang() {
-      lang = lang === 'SW' ? 'EN' : 'SW';
-      applyLang();
-    }
+    function toggleLang() { lang = lang === 'SW' ? 'EN' : 'SW'; applyLang(); }
     function applyLang() {
       const t = i18n[lang];
       document.getElementById('btn-lang').innerText = lang === 'SW' ? 'SW / EN' : 'EN / SW';
@@ -435,106 +347,123 @@
       document.getElementById('g3-t').innerText = t.g3t; document.getElementById('g3-d').innerText = t.g3d;
       document.getElementById('g4-t').innerText = t.g4t; document.getElementById('g4-d').innerText = t.g4d;
       document.getElementById('btn-ad').innerText = t.ad;
-      document.getElementById('btn-wal').innerText = t.wal;
       document.getElementById('btn-retry').innerText = t.retry;
       document.getElementById('btn-over-ad').innerText = t.overAd;
-      document.getElementById('btn-over-wd').innerText = t.overWd;
       document.getElementById('btn-over-menu').innerText = t.overMenu;
-      document.getElementById('w-sub').innerText = t.wSub;
-      document.getElementById('lbl-t').innerText = t.lblT;
-      document.getElementById('lbl-c').innerText = t.lblC;
-      document.getElementById('btn-conv').innerText = t.conv;
-      document.getElementById('lbl-net').innerText = t.lblNet;
-      document.getElementById('lbl-ph').innerText = t.lblPh;
-      document.getElementById('lbl-am').innerText = t.lblAm;
-      document.getElementById('btn-req').innerText = t.req;
-      document.getElementById('btn-w-back').innerText = t.back;
       document.getElementById('d-title').innerText = t.dTitle;
       document.getElementById('d-desc').innerText = t.dDesc;
       updateDailyButtonUI();
     }
 
-    function checkDailyStatus() {
-      const today = new Date().toISOString().slice(0, 10);
-      return data.lastDailyDate === today;
-    }
-
+    function checkDailyStatus() { return data.lastDailyDate === new Date().toISOString().slice(0, 10); }
     function updateDailyButtonUI() {
       const btn = document.getElementById('daily-btn');
       const t = i18n[lang];
-      if (checkDailyStatus()) {
-        btn.innerText = t.dClaimed;
-        btn.disabled = true;
-      } else {
-        btn.innerText = t.dBtn;
-        btn.disabled = false;
-      }
+      if (checkDailyStatus()) { btn.innerText = t.dClaimed; btn.disabled = true; }
+      else { btn.innerText = t.dBtn; btn.disabled = false; }
     }
-
     function claimDaily() {
-      if (checkDailyStatus()) {
-        toast(lang === 'SW' ? 'Umekwisha chukua zawadi ya leo! Rudi kesho.' : 'Already claimed today! Come back tomorrow.');
-        return;
-      }
-      const today = new Date().toISOString().slice(0, 10);
-      data.lastDailyDate = today;
-      data.tik += 100;
-      save();
-      updateDailyButtonUI();
-      toast(lang === 'SW' ? 'Hongera! Umepokea Tiketi 100 za Daily Challenge!' : 'Congrats! Claimed 100 Daily Tickets!');
+      if (checkDailyStatus()) { toast(lang === 'SW' ? 'Umekwisha chukua zawadi ya leo!' : 'Already claimed today!'); return; }
+      data.lastDailyDate = new Date().toISOString().slice(0, 10);
+      data.tik += 100; save(); updateDailyButtonUI();
+      toast(lang === 'SW' ? 'Hongera! Umepokea Tiketi 100 za bure!' : 'Congrats! Claimed 100 Free Tickets!');
     }
 
-    // USIMBAJI WA DATA ILI KUZUIA KUBADILISHWA KIENYEJI
-    function encryptData(obj) {
-      try { return btoa(encodeURIComponent(JSON.stringify(obj))); } catch(e) { return null; }
-    }
-    function decryptData(str) {
-      try { return JSON.parse(decodeURIComponent(atob(str))); } catch(e) { return null; }
-    }
-
+    function encryptData(obj) { try { return btoa(encodeURIComponent(JSON.stringify(obj))); } catch(e) { return null; } }
+    function decryptData(str) { try { return JSON.parse(decodeURIComponent(atob(str))); } catch(e) { return null; } }
     function load() {
       try {
-        const raw = localStorage.getItem('cyber_arena_secure_v5');
-        if (raw) {
-          const s = decryptData(raw);
-          if (s) data = { ...data, ...s };
-        }
+        const raw = localStorage.getItem('cyber_arena_3d_v7');
+        if (raw) { const s = decryptData(raw); if (s) data = { ...data, ...s }; }
       } catch(e) {}
       syncUI(); applyLang();
     }
     function save() {
-      try {
-        const enc = encryptData(data);
-        if (enc) localStorage.setItem('cyber_arena_secure_v5', enc);
-      } catch(e) {}
+      try { const enc = encryptData(data); if (enc) localStorage.setItem('cyber_arena_3d_v7', enc); } catch(e) {}
       syncUI();
     }
     function syncUI() {
       document.getElementById('ui-tik').innerText = data.tik;
-      document.getElementById('ui-tsh').innerText = data.tsh.toLocaleString();
-      document.getElementById('w-tik').innerText = data.tik + ' 🎫';
-      document.getElementById('w-tsh').innerText = 'Tsh ' + data.tsh.toLocaleString();
       document.getElementById('adm-rev').innerText = '$' + data.rev.toFixed(4);
-      document.getElementById('adm-ads').innerText = data.ads + ' / 15';
+      document.getElementById('adm-ads').innerText = data.ads + ' / 25';
       updateDailyButtonUI();
-
-      const list = document.getElementById('adm-list');
-      if (!data.payouts.length) {
-        list.innerHTML = `<div style="font-size:11px; color:var(--muted);">Hakuna maombi ya kutoa pesa bado.</div>`;
-      } else {
-        list.innerHTML = data.payouts.map(p => `
-          <div class="req-row ${p.status === 'PAID' ? 'paid' : ''}">
-            <div><strong style="color:#fff;">Tsh ${Number(p.amt).toLocaleString()}</strong> • ${p.net}<br><span style="color:var(--cyan);">${p.ph}</span></div>
-            <div>${p.status === 'PENDING' ? `<button class="pay-badge" onclick="markPaid(${p.id})">LIPA</button>` : `<span style="color:var(--emerald); font-weight:800;">IMELIPWA ✓</span>`}</div>
-          </div>
-        `).join('');
-      }
     }
-
     function toast(msg) {
       const el = document.getElementById('toast');
       el.innerText = msg; el.classList.add('show');
       setTimeout(() => el.classList.remove('show'), 2800);
+    }
+
+    // ==========================================
+    // THREE.JS REAL 3D WEBGL ENGINE
+    // ==========================================
+    const container = document.getElementById('gl-container');
+    let scene, camera, renderer;
+    let mode = 'MENU';
+    let activeGame = 1;
+    let score = 0;
+    let frame = 0;
+
+    // 3D Game Objects & States
+    let g1Car, g1RoadGrid, g1Lane = 0, g1Obstacles = [], g1Speed = 0.55;
+    let g2Ship, g2TargetX = 0, g2Lasers = [], g2Enemies = [], g2Stars;
+    let g3Paddle, g3Ball, g3BallVel = { x: 0.14, z: -0.18 }, g3Bricks = [];
+    let g4Stack = [], g4Mover = null, g4Dir = 1, g4CamTargetY = 4;
+    let explosions = [];
+
+    function initThree() {
+      scene = new THREE.Scene();
+      scene.fog = new THREE.FogExp2(0x04060d, 0.022);
+
+      const w = container.clientWidth || 360;
+      const h = container.clientHeight || 640;
+      camera = new THREE.PerspectiveCamera(60, w / h, 0.1, 200);
+
+      renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: "high-performance" });
+      renderer.setSize(w, h);
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+      renderer.setClearColor(0x04060d, 1);
+      container.innerHTML = '';
+      container.appendChild(renderer.domElement);
+
+      window.addEventListener('resize', () => {
+        if (!container.clientWidth) return;
+        camera.aspect = container.clientWidth / container.clientHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(container.clientWidth, container.clientHeight);
+      });
+    }
+
+    function clearScene() {
+      while(scene.children.length > 0) {
+        const obj = scene.children[0];
+        scene.remove(obj);
+      }
+      explosions = [];
+      const ambient = new THREE.AmbientLight(0xffffff, 0.65);
+      scene.add(ambient);
+      const dirLight = new THREE.DirectionalLight(0x00f0ff, 1.2);
+      dirLight.position.set(10, 20, 15);
+      scene.add(dirLight);
+      const rimLight = new THREE.DirectionalLight(0xff0055, 0.8);
+      rimLight.position.set(-10, 10, -10);
+      scene.add(rimLight);
+    }
+
+    function spawn3DExplosion(pos, colorHex, count = 14) {
+      const geo = new THREE.BoxGeometry(0.25, 0.25, 0.25);
+      const mat = new THREE.MeshBasicMaterial({ color: colorHex });
+      for (let i = 0; i < count; i++) {
+        const mesh = new THREE.Mesh(geo, mat);
+        mesh.position.copy(pos);
+        const vel = new THREE.Vector3(
+          (Math.random() - 0.5) * 0.4,
+          Math.random() * 0.4,
+          (Math.random() - 0.5) * 0.4
+        );
+        scene.add(mesh);
+        explosions.push({ mesh, vel, life: 1.0 });
+      }
     }
 
     function openScreen(id) {
@@ -545,314 +474,506 @@
       syncUI();
     }
 
-    function quitToMenu() {
-      openScreen('menu');
-    }
-
-    let particles = [];
-    let shake = 0;
-    function spawnParticles(x, y, color, count = 15) {
-      for (let i = 0; i < count; i++) {
-        const ang = Math.random() * Math.PI * 2;
-        const spd = 2 + Math.random() * 5;
-        particles.push({ x, y, vx: Math.cos(ang)*spd, vy: Math.sin(ang)*spd, life: 1, color, size: 2 + Math.random()*2 });
-      }
-    }
-
-    let mode = 'MENU';
-    let activeGame = 1;
-    let score = 0;
-    let frame = 0;
-
-    let carLane = 1, carVisualX = 0, roadObs = [], roadSpeed = 0.018;
-    let ship = { x: 0, y: 0, tx: 0 }, lasers = [], enemies = [], stars = Array.from({length: 35}, () => ({ x: Math.random()*480, y: Math.random()*800, s: 1+Math.random()*2 }));
-    let pad = { x: 0, w: 90, h: 14 }, orb = { x: 0, y: 0, vx: 3.5, vy: -3.8, r: 8 }, blocks = [];
-    let stack = [], mover = null, camY = 0;
+    function quitToMenu() { openScreen('menu'); }
 
     function launchGame(id) {
+      if (!renderer) initThree();
       activeGame = id;
       score = 0;
       frame = 0;
-      particles = [];
-      shake = 0;
       document.getElementById('hud-score').innerText = '0';
       document.querySelectorAll('.screen').forEach(s => s.classList.add('hidden'));
       document.getElementById('canvas-box').classList.add('active');
-      resizeCanvas();
 
-      if (id === 1) { carLane = 1; carVisualX = canvas.width / 2; roadObs = []; roadSpeed = 0.016; }
-      else if (id === 2) { ship.x = canvas.width / 2; ship.tx = ship.x; ship.y = canvas.height - 90; lasers = []; enemies = []; }
-      else if (id === 3) {
-        pad.x = canvas.width / 2 - pad.w / 2;
-        orb = { x: canvas.width / 2, y: canvas.height - 110, vx: 3.5, vy: -3.8, r: 8 };
-        blocks = [];
-        const cols = 6, rows = 4;
-        const bw = (canvas.width - 40) / cols;
-        const colors = ['#ff0055', '#ffcc00', '#00ff88', '#00f0ff'];
-        for (let r = 0; r < rows; r++) {
-          for (let c = 0; c < cols; c++) {
-            blocks.push({ x: 20 + c*bw + 2, y: 80 + r*22, w: bw - 4, h: 16, color: colors[r], alive: true });
-          }
-        }
-      } else if (id === 4) { camY = 0; stack = [{ x: canvas.width/2 - 70, y: canvas.height - 100, w: 140, color: '#00f0ff' }]; spawnMover(); }
+      renderer.setSize(container.clientWidth, container.clientHeight);
+      camera.aspect = container.clientWidth / container.clientHeight;
+      camera.updateProjectionMatrix();
+
+      clearScene();
+
+      if (id === 1) setupGame1Racer();
+      else if (id === 2) setupGame2Space();
+      else if (id === 3) setupGame3Breaker();
+      else if (id === 4) setupGame4Tower();
+
       mode = 'PLAY';
-    }
-
-    function spawnMover() {
-      const top = stack[stack.length - 1];
-      const palette = ['#00f0ff', '#00ff88', '#ffcc00', '#ff0055', '#aa00ff'];
-      mover = { x: 0, y: top.y - 25, w: top.w, vx: 3.8 + stack.length * 0.1, dir: 1, color: palette[stack.length % palette.length] };
     }
 
     function endGame() {
       if (mode === 'OVER') return;
       mode = 'OVER';
-      shake = 10;
       sfx('boom');
       const earnedTik = Math.max(10, Math.floor(score / 2));
       data.tik += earnedTik;
       save();
-      document.getElementById('canvas-box').classList.remove('active');
-      document.getElementById('over-stats').innerText = `Score: ${score}  •  +${earnedTik} 🎫`;
-      document.getElementById('scr-over').classList.remove('hidden');
+      setTimeout(() => {
+        document.getElementById('canvas-box').classList.remove('active');
+        document.getElementById('over-stats').innerText = `Score: ${score}  •  +${earnedTik} 🎫`;
+        document.getElementById('scr-over').classList.remove('hidden');
+      }, 450);
     }
 
-    canvas.addEventListener('pointerdown', (e) => {
+    // --- GAME 1: 3D CYBER RACER ---
+    function setupGame1Racer() {
+      scene.fog = new THREE.FogExp2(0x04060d, 0.025);
+      camera.position.set(0, 4.2, 8.5);
+      camera.lookAt(0, 0.8, -10);
+
+      // 3D Neon Road Grid
+      g1RoadGrid = new THREE.GridHelper(12, 24, 0x00f0ff, 0x1e293b);
+      g1RoadGrid.position.set(0, 0, -15);
+      g1RoadGrid.scale.set(1, 1, 4);
+      scene.add(g1RoadGrid);
+
+      // Side Rails
+      const railGeo = new THREE.BoxGeometry(0.3, 0.5, 80);
+      const railMat = new THREE.MeshStandardMaterial({ color: 0xff0055, emissive: 0x550022 });
+      const leftRail = new THREE.Mesh(railGeo, railMat);
+      leftRail.position.set(-5.8, 0.25, -20);
+      const rightRail = new THREE.Mesh(railGeo, railMat);
+      rightRail.position.set(5.8, 0.25, -20);
+      scene.add(leftRail, rightRail);
+
+      // 3D Sports Car Group
+      g1Car = new THREE.Group();
+      const bodyMesh = new THREE.Mesh(
+        new THREE.BoxGeometry(1.6, 0.55, 3.0),
+        new THREE.MeshStandardMaterial({ color: 0x00f0ff, metalness: 0.7, roughness: 0.2 })
+      );
+      bodyMesh.position.y = 0.45;
+      const cabinMesh = new THREE.Mesh(
+        new THREE.BoxGeometry(1.2, 0.45, 1.4),
+        new THREE.MeshStandardMaterial({ color: 0x0f172a, metalness: 0.9, roughness: 0.1 })
+      );
+      cabinMesh.position.set(0, 0.85, -0.1);
+      const tailLight = new THREE.Mesh(
+        new THREE.BoxGeometry(1.4, 0.15, 0.1),
+        new THREE.MeshBasicMaterial({ color: 0xff0055 })
+      );
+      tailLight.position.set(0, 0.5, 1.51);
+      g1Car.add(bodyMesh, cabinMesh, tailLight);
+      g1Car.position.set(0, 0, 2);
+      scene.add(g1Car);
+
+      g1Lane = 0; // -1, 0, 1
+      g1Obstacles = [];
+      g1Speed = 0.55;
+    }
+
+    // --- GAME 2: 3D STAR VANGUARD ---
+    function setupGame2Space() {
+      scene.fog = new THREE.FogExp2(0x04060d, 0.015);
+      camera.position.set(0, 8, 11);
+      camera.lookAt(0, 0, -6);
+
+      // 3D Starfield
+      const starGeo = new THREE.BufferGeometry();
+      const starVerts = [];
+      for (let i = 0; i < 300; i++) {
+        starVerts.push((Math.random() - 0.5) * 40, (Math.random() - 0.5) * 20, -Math.random() * 60);
+      }
+      starGeo.setAttribute('position', new THREE.Float32BufferAttribute(starVerts, 3));
+      g2Stars = new THREE.Points(starGeo, new THREE.PointsMaterial({ color: 0xffffff, size: 0.25 }));
+      scene.add(g2Stars);
+
+      // 3D Fighter Jet
+      g2Ship = new THREE.Group();
+      const fuselage = new THREE.Mesh(
+        new THREE.ConeGeometry(0.7, 2.6, 6),
+        new THREE.MeshStandardMaterial({ color: 0xffffff, metalness: 0.6, roughness: 0.3 })
+      );
+      fuselage.rotation.x = -Math.PI / 2;
+      const wings = new THREE.Mesh(
+        new THREE.BoxGeometry(3.2, 0.12, 0.9),
+        new THREE.MeshStandardMaterial({ color: 0x00f0ff, emissive: 0x004466 })
+      );
+      wings.position.z = 0.4;
+      g2Ship.add(fuselage, wings);
+      g2Ship.position.set(0, 0, 4);
+      scene.add(g2Ship);
+
+      g2TargetX = 0;
+      g2Lasers = [];
+      g2Enemies = [];
+    }
+
+    // --- GAME 3: 3D PLASMA BREAKER ---
+    function setupGame3Breaker() {
+      scene.fog = null;
+      camera.position.set(0, 13, 12);
+      camera.lookAt(0, 0, -1);
+
+      // Arena Floor & Walls
+      const floor = new THREE.Mesh(
+        new THREE.PlaneGeometry(11, 18),
+        new THREE.MeshStandardMaterial({ color: 0x090d1a, roughness: 0.8 })
+      );
+      floor.rotation.x = -Math.PI / 2;
+      floor.position.y = -0.3;
+      scene.add(floor);
+
+      const wallMat = new THREE.MeshStandardMaterial({ color: 0x00f0ff, emissive: 0x003344 });
+      const leftWall = new THREE.Mesh(new THREE.BoxGeometry(0.4, 0.8, 18), wallMat);
+      leftWall.position.set(-5.5, 0.1, 0);
+      const rightWall = new THREE.Mesh(new THREE.BoxGeometry(0.4, 0.8, 18), wallMat);
+      rightWall.position.set(5.5, 0.1, 0);
+      const topWall = new THREE.Mesh(new THREE.BoxGeometry(11.4, 0.8, 0.4), wallMat);
+      topWall.position.set(0, 0.1, -9);
+      scene.add(leftWall, rightWall, topWall);
+
+      // 3D Paddle
+      g3Paddle = new THREE.Mesh(
+        new THREE.BoxGeometry(2.6, 0.45, 0.6),
+        new THREE.MeshStandardMaterial({ color: 0x00f0ff, emissive: 0x006688 })
+      );
+      g3Paddle.position.set(0, 0.2, 7.2);
+      scene.add(g3Paddle);
+
+      // 3D Glowing Sphere
+      g3Ball = new THREE.Mesh(
+        new THREE.SphereGeometry(0.35, 16, 16),
+        new THREE.MeshStandardMaterial({ color: 0xffffff, emissive: 0xffcc00 })
+      );
+      g3Ball.position.set(0, 0.35, 5.5);
+      scene.add(g3Ball);
+      g3BallVel = { x: 0.13, z: -0.17 };
+
+      // 3D Bricks
+      g3Bricks = [];
+      const colors = [0xff0055, 0xffcc00, 0x00ff88, 0x00f0ff];
+      for (let r = 0; r < 4; r++) {
+        for (let c = 0; c < 5; c++) {
+          const brick = new THREE.Mesh(
+            new THREE.BoxGeometry(1.8, 0.5, 0.8),
+            new THREE.MeshStandardMaterial({ color: colors[r], metalness: 0.4, roughness: 0.3 })
+          );
+          brick.position.set(-4.0 + c * 2.0, 0.25, -7.2 + r * 1.1);
+          scene.add(brick);
+          g3Bricks.push({ mesh: brick, color: colors[r], alive: true });
+        }
+      }
+    }
+
+    // --- GAME 4: 3D TOWER ARCHITECT ---
+    function setupGame4Tower() {
+      scene.fog = new THREE.FogExp2(0x04060d, 0.015);
+      camera.position.set(6, 6, 8);
+      camera.lookAt(0, 1, 0);
+
+      g4Stack = [];
+      const baseMesh = new THREE.Mesh(
+        new THREE.BoxGeometry(3.6, 0.7, 3.6),
+        new THREE.MeshStandardMaterial({ color: 0x00f0ff, metalness: 0.5, roughness: 0.2 })
+      );
+      baseMesh.position.set(0, 0, 0);
+      scene.add(baseMesh);
+      g4Stack.push({ mesh: baseMesh, w: 3.6, d: 3.6, x: 0, z: 0, y: 0 });
+
+      g4CamTargetY = 5.5;
+      spawn3DTowerBlock();
+    }
+
+    function spawn3DTowerBlock() {
+      const top = g4Stack[g4Stack.length - 1];
+      const palette = [0x00ff88, 0xffcc00, 0xff0055, 0x00f0ff, 0xaa00ff];
+      const col = palette[g4Stack.length % palette.length];
+      const geo = new THREE.BoxGeometry(top.w, 0.7, top.d);
+      const mat = new THREE.MeshStandardMaterial({ color: col, metalness: 0.4, roughness: 0.25 });
+      const mesh = new THREE.Mesh(geo, mat);
+      const nextY = top.y + 0.7;
+      mesh.position.set(-5.0, nextY, top.z);
+      scene.add(mesh);
+      g4Mover = { mesh, w: top.w, d: top.d, y: nextY, color: col, speed: 0.11 + g4Stack.length * 0.004 };
+      g4Dir = 1;
+    }
+
+    // ==========================================
+    // TOUCH / POINTER CONTROLS FOR 3D GAMES
+    // ==========================================
+    container.addEventListener('pointerdown', (e) => {
       if (mode !== 'PLAY') return;
-      const rect = canvas.getBoundingClientRect();
-      const px = e.clientX - rect.left;
+      const rect = container.getBoundingClientRect();
+      const normX = ((e.clientX - rect.left) / rect.width) * 2 - 1; // -1 to 1
 
       if (activeGame === 1) {
-        if (px < canvas.width / 2) carLane = Math.max(0, carLane - 1);
-        else carLane = Math.min(2, carLane + 1);
+        if (normX < 0) g1Lane = Math.max(-1, g1Lane - 1);
+        else g1Lane = Math.min(1, g1Lane + 1);
         sfx('hit');
-      } else if (activeGame === 2) { ship.tx = px; }
-      else if (activeGame === 3) { pad.x = Math.max(0, Math.min(canvas.width - pad.w, px - pad.w / 2)); }
-      else if (activeGame === 4) {
-        const top = stack[stack.length - 1];
-        const diff = mover.x - top.x;
-        if (Math.abs(diff) >= top.w) { spawnParticles(mover.x + mover.w/2, mover.y, mover.color, 20); endGame(); return; }
-        if (Math.abs(diff) < 5) { mover.x = top.x; sfx('hit'); spawnParticles(mover.x + mover.w/2, mover.y, '#ffffff', 15); }
-        else {
-          mover.w = top.w - Math.abs(diff);
-          mover.x = diff > 0 ? top.x + diff : top.x;
-          sfx('hit');
-          spawnParticles(mover.x + mover.w/2, mover.y, mover.color, 10);
-        }
-        stack.push(mover);
-        score += 2;
-        document.getElementById('hud-score').innerText = score;
-        if (stack.length > 7) camY += 25;
-        spawnMover();
+      } else if (activeGame === 2) {
+        g2TargetX = normX * 5.2;
+      } else if (activeGame === 3) {
+        g3Paddle.position.x = Math.max(-3.8, Math.min(3.8, normX * 4.5));
+      } else if (activeGame === 4) {
+        handleTowerDrop();
       }
     });
 
-    canvas.addEventListener('pointermove', (e) => {
+    container.addEventListener('pointermove', (e) => {
       if (mode !== 'PLAY') return;
-      const rect = canvas.getBoundingClientRect();
-      const px = e.clientX - rect.left;
-      if (activeGame === 2) ship.tx = px;
-      if (activeGame === 3) pad.x = Math.max(0, Math.min(canvas.width - pad.w, px - pad.w / 2));
+      const rect = container.getBoundingClientRect();
+      const normX = ((e.clientX - rect.left) / rect.width) * 2 - 1;
+
+      if (activeGame === 2) {
+        g2TargetX = normX * 5.2;
+      } else if (activeGame === 3) {
+        g3Paddle.position.x = Math.max(-3.8, Math.min(3.8, normX * 4.5));
+      }
     });
 
-    function tick() {
-      frame++;
-      ctx.save();
-      if (shake > 0) {
-        ctx.translate((Math.random()-0.5)*shake, (Math.random()-0.5)*shake);
-        shake *= 0.8;
-        if (shake < 0.5) shake = 0;
+    function handleTowerDrop() {
+      if (!g4Mover) return;
+      const top = g4Stack[g4Stack.length - 1];
+      const diff = g4Mover.mesh.position.x - top.x;
+
+      if (Math.abs(diff) >= top.w) {
+        spawn3DExplosion(g4Mover.mesh.position, g4Mover.color, 20);
+        scene.remove(g4Mover.mesh);
+        g4Mover = null;
+        endGame();
+        return;
       }
 
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-      ctx.fillStyle = 'rgba(255,255,255,0.3)';
-      for (let st of stars) {
-        st.y += st.s * (mode === 'PLAY' ? 1.2 : 0.3);
-        if (st.y > canvas.height) { st.y = 0; st.x = Math.random()*canvas.width; }
-        ctx.fillRect(st.x, st.y, st.s, st.s);
+      if (Math.abs(diff) < 0.18) {
+        // Perfect snap!
+        g4Mover.mesh.position.x = top.x;
+        sfx('hit');
+        spawn3DExplosion(g4Mover.mesh.position, 0xffffff, 12);
+      } else {
+        // Slice overhang in 3D
+        const newW = top.w - Math.abs(diff);
+        const newX = top.x + diff / 2;
+        scene.remove(g4Mover.mesh);
+        const slicedMesh = new THREE.Mesh(
+          new THREE.BoxGeometry(newW, 0.7, top.d),
+          new THREE.MeshStandardMaterial({ color: g4Mover.color, metalness: 0.4, roughness: 0.25 })
+        );
+        slicedMesh.position.set(newX, g4Mover.y, top.z);
+        scene.add(slicedMesh);
+        g4Mover.mesh = slicedMesh;
+        g4Mover.w = newW;
+        sfx('hit');
+        spawn3DExplosion(slicedMesh.position, g4Mover.color, 10);
       }
 
-      if (mode === 'PLAY') {
-        if (activeGame === 1) render3DRacer();
-        else if (activeGame === 2) renderStarVanguard();
-        else if (activeGame === 3) renderPlasmaBreaker();
-        else if (activeGame === 4) renderTowerArchitect();
-      }
-
-      for (let i = particles.length - 1; i >= 0; i--) {
-        let p = particles[i];
-        p.x += p.vx; p.y += p.vy; p.life -= 0.04;
-        if (p.life <= 0) { particles.splice(i, 1); continue; }
-        ctx.globalAlpha = p.life;
-        ctx.fillStyle = p.color;
-        ctx.fillRect(p.x, p.y, p.size, p.size);
-      }
-      ctx.globalAlpha = 1;
-      ctx.restore();
-      requestAnimationFrame(tick);
-    }
-
-    function render3DRacer() {
-      const w = canvas.width, h = canvas.height;
-      const horizonY = h * 0.28, vanishX = w * 0.5;
-      
-      ctx.fillStyle = 'rgba(255, 0, 85, 0.15)';
-      ctx.fillRect(0, horizonY, w, h - horizonY);
-
-      ctx.strokeStyle = 'rgba(0, 240, 255, 0.4)'; ctx.lineWidth = 2;
-      const roadHalfBottom = w * 0.45, roadHalfTop = w * 0.06;
-      [-1, -0.33, 0.33, 1].forEach(ratio => {
-        ctx.beginPath(); ctx.moveTo(vanishX + roadHalfTop * ratio, horizonY); ctx.lineTo(vanishX + roadHalfBottom * ratio, h); ctx.stroke();
+      g4Stack.push({
+        mesh: g4Mover.mesh,
+        w: g4Mover.w,
+        d: top.d,
+        x: g4Mover.mesh.position.x,
+        z: top.z,
+        y: g4Mover.y
       });
 
-      if (frame % Math.max(25, 50 - Math.floor(score/2)) === 0) {
-        roadObs.push({ lane: Math.floor(Math.random()*3), z: 0.02 });
-      }
-      roadSpeed = 0.014 + Math.min(0.018, score * 0.0003);
-
-      for (let i = roadObs.length - 1; i >= 0; i--) {
-        let ob = roadObs[i];
-        ob.z += roadSpeed * (0.5 + ob.z);
-        let persp = ob.z * ob.z;
-        let y = horizonY + (h - horizonY) * persp;
-        let hw = roadHalfTop + (roadHalfBottom - roadHalfTop) * persp;
-        let laneOffset = (ob.lane - 1) * 0.66;
-        let ox = vanishX + hw * laneOffset, ow = hw * 0.5, oh = 32 * persp;
-
-        ctx.fillStyle = '#ff0055';
-        ctx.fillRect(ox - ow/2, y - oh, ow, oh);
-
-        if (ob.z > 0.88 && ob.z < 0.98 && ob.lane === carLane) { spawnParticles(ox, y, '#ff0055', 20); endGame(); }
-        if (ob.z >= 1.05) { roadObs.splice(i, 1); score++; document.getElementById('hud-score').innerText = score; }
-      }
-
-      const targetX = vanishX + roadHalfBottom * ((carLane - 1) * 0.66);
-      carVisualX += (targetX - carVisualX) * 0.25;
-      const cy = h - 65;
-
-      ctx.fillStyle = '#00f0ff';
-      ctx.fillRect(carVisualX - 18, cy - 8, 36, 22);
+      score += 2;
+      document.getElementById('hud-score').innerText = score;
+      g4CamTargetY = g4Mover.y + 5.5;
+      spawn3DTowerBlock();
     }
 
-    function renderStarVanguard() {
-      ship.x += (ship.tx - ship.x) * 0.25;
-      ship.x = Math.max(20, Math.min(canvas.width - 20, ship.x));
-      if (frame % 12 === 0) { lasers.push({ x: ship.x, y: ship.y - 12 }); sfx('laser'); }
-      if (frame % Math.max(25, 50 - Math.floor(score/3)) === 0) {
-        enemies.push({ x: 30 + Math.random() * (canvas.width - 60), y: -20, vy: 2 + Math.random()*2, r: 16 });
+    // ==========================================
+    // MAIN 3D RENDER & PHYSICS LOOP
+    // ==========================================
+    function animate() {
+      requestAnimationFrame(animate);
+      frame++;
+
+      if (mode === 'PLAY' && scene && camera && renderer) {
+        if (activeGame === 1) updateGame1Racer();
+        else if (activeGame === 2) updateGame2Space();
+        else if (activeGame === 3) updateGame3Breaker();
+        else if (activeGame === 4) updateGame4Tower();
       }
 
-      ctx.fillStyle = '#00f0ff';
-      for (let i = lasers.length - 1; i >= 0; i--) {
-        let l = lasers[i]; l.y -= 10; ctx.fillRect(l.x - 2, l.y, 4, 14);
-        if (l.y < -20) lasers.splice(i, 1);
+      // Update 3D Particle Explosions
+      for (let i = explosions.length - 1; i >= 0; i--) {
+        const ex = explosions[i];
+        ex.mesh.position.add(ex.vel);
+        ex.mesh.rotation.x += 0.1;
+        ex.mesh.rotation.y += 0.1;
+        ex.life -= 0.04;
+        ex.mesh.scale.setScalar(Math.max(0.01, ex.life));
+        if (ex.life <= 0) {
+          scene.remove(ex.mesh);
+          explosions.splice(i, 1);
+        }
       }
 
-      for (let i = enemies.length - 1; i >= 0; i--) {
-        let en = enemies[i]; en.y += en.vy;
-        ctx.fillStyle = '#ff0055'; ctx.fillRect(en.x - en.r, en.y - en.r, en.r*2, en.r*2);
+      if (renderer && scene && camera) {
+        renderer.render(scene, camera);
+      }
+    }
 
-        for (let j = lasers.length - 1; j >= 0; j--) {
-          let l = lasers[j];
-          if (Math.hypot(l.x - en.x, l.y - en.y) < en.r + 5) {
-            lasers.splice(j, 1); spawnParticles(en.x, en.y, '#ff0055', 12);
-            sfx('boom'); enemies.splice(i, 1); score += 2; document.getElementById('hud-score').innerText = score; break;
+    function updateGame1Racer() {
+      g1Speed = 0.55 + Math.min(0.65, score * 0.012);
+      g1RoadGrid.position.z += g1Speed;
+      if (g1RoadGrid.position.z > 0) g1RoadGrid.position.z = -15;
+
+      const targetX = g1Lane * 3.0;
+      g1Car.position.x += (targetX - g1Car.position.x) * 0.22;
+      g1Car.rotation.z = (g1Car.position.x - targetX) * 0.15;
+
+      if (frame % Math.max(24, 48 - Math.floor(score / 2)) === 0) {
+        const lane = Math.floor(Math.random() * 3) - 1;
+        const obsMesh = new THREE.Mesh(
+          new THREE.BoxGeometry(1.8, 1.2, 1.8),
+          new THREE.MeshStandardMaterial({ color: 0xff0055, emissive: 0x660022 })
+        );
+        obsMesh.position.set(lane * 3.0, 0.6, -45);
+        scene.add(obsMesh);
+        g1Obstacles.push({ mesh: obsMesh, lane });
+      }
+
+      for (let i = g1Obstacles.length - 1; i >= 0; i--) {
+        const ob = g1Obstacles[i];
+        ob.mesh.position.z += g1Speed;
+
+        // Collision check
+        if (Math.abs(ob.mesh.position.z - g1Car.position.z) < 2.1 && Math.abs(ob.mesh.position.x - g1Car.position.x) < 1.3) {
+          spawn3DExplosion(g1Car.position, 0xff0055, 22);
+          endGame();
+          return;
+        }
+
+        if (ob.mesh.position.z > 10) {
+          scene.remove(ob.mesh);
+          g1Obstacles.splice(i, 1);
+          score++;
+          document.getElementById('hud-score').innerText = score;
+        }
+      }
+    }
+
+    function updateGame2Space() {
+      g2Ship.position.x += (g2TargetX - g2Ship.position.x) * 0.2;
+      g2Ship.rotation.z = (g2Ship.position.x - g2TargetX) * 0.25;
+
+      if (frame % 14 === 0) {
+        const laser = new THREE.Mesh(
+          new THREE.CylinderGeometry(0.08, 0.08, 1.4, 8),
+          new THREE.MeshBasicMaterial({ color: 0x00f0ff })
+        );
+        laser.rotation.x = Math.PI / 2;
+        laser.position.set(g2Ship.position.x, 0, g2Ship.position.z - 1.4);
+        scene.add(laser);
+        g2Lasers.push(laser);
+        sfx('laser');
+      }
+
+      if (frame % Math.max(25, 50 - Math.floor(score / 3)) === 0) {
+        const enemy = new THREE.Mesh(
+          new THREE.OctahedronGeometry(0.95, 0),
+          new THREE.MeshStandardMaterial({ color: 0xff0055, emissive: 0x550022 })
+        );
+        enemy.position.set((Math.random() - 0.5) * 9.5, 0, -35);
+        scene.add(enemy);
+        g2Enemies.push(enemy);
+      }
+
+      for (let i = g2Lasers.length - 1; i >= 0; i--) {
+        const l = g2Lasers[i];
+        l.position.z -= 0.85;
+        if (l.position.z < -40) { scene.remove(l); g2Lasers.splice(i, 1); }
+      }
+
+      for (let i = g2Enemies.length - 1; i >= 0; i--) {
+        const en = g2Enemies[i];
+        en.position.z += 0.26 + Math.min(0.25, score * 0.004);
+        en.rotation.y += 0.05;
+
+        let hit = false;
+        for (let j = g2Lasers.length - 1; j >= 0; j--) {
+          const l = g2Lasers[j];
+          if (l.position.distanceTo(en.position) < 1.3) {
+            scene.remove(l); g2Lasers.splice(j, 1);
+            spawn3DExplosion(en.position, 0xff0055, 14);
+            sfx('boom');
+            scene.remove(en); g2Enemies.splice(i, 1);
+            score += 2;
+            document.getElementById('hud-score').innerText = score;
+            hit = true;
+            break;
           }
         }
-        if (en && Math.hypot(ship.x - en.x, ship.y - en.y) < en.r + 12) { endGame(); }
-        else if (en && en.y > canvas.height + 20) { enemies.splice(i, 1); }
-      }
+        if (hit) continue;
 
-      ctx.fillStyle = '#ffffff';
-      ctx.fillRect(ship.x - 14, ship.y - 14, 28, 28);
-    }
-
-    function renderPlasmaBreaker() {
-      orb.x += orb.vx; orb.y += orb.vy;
-      if (orb.x < orb.r || orb.x > canvas.width - orb.r) { orb.vx *= -1; sfx('hit'); }
-      if (orb.y < orb.r) { orb.vy *= -1; sfx('hit'); }
-      const py = canvas.height - 45;
-      if (orb.vy > 0 && orb.y + orb.r >= py && orb.y - orb.r <= py + pad.h && orb.x >= pad.x && orb.x <= pad.x + pad.w) {
-        orb.vx = ((orb.x - (pad.x + pad.w/2)) / (pad.w/2)) * 4;
-        orb.vy = -Math.abs(orb.vy); sfx('hit');
-      }
-      if (orb.y > canvas.height + 20) endGame();
-
-      let remaining = 0;
-      for (let b of blocks) {
-        if (!b.alive) continue; remaining++;
-        if (orb.x + orb.r > b.x && orb.x - orb.r < b.x + b.w && orb.y + orb.r > b.y && orb.y - orb.r < b.y + b.h) {
-          b.alive = false; orb.vy *= -1; score += 3; document.getElementById('hud-score').innerText = score; sfx('boom'); spawnParticles(b.x + b.w/2, b.y + b.h/2, b.color, 10);
+        if (en.position.distanceTo(g2Ship.position) < 1.4) {
+          spawn3DExplosion(g2Ship.position, 0x00f0ff, 22);
+          endGame();
+          return;
         }
-        ctx.fillStyle = b.color; ctx.fillRect(b.x, b.y, b.w, b.h);
-      }
-      if (remaining === 0) launchGame(3);
 
-      ctx.fillStyle = '#00f0ff'; ctx.fillRect(pad.x, py, pad.w, pad.h);
-      ctx.fillStyle = '#ffffff'; ctx.beginPath(); ctx.arc(orb.x, orb.y, orb.r, 0, Math.PI*2); ctx.fill();
+        if (en.position.z > 8) {
+          scene.remove(en);
+          g2Enemies.splice(i, 1);
+        }
+      }
     }
 
-    function renderTowerArchitect() {
-      ctx.save(); ctx.translate(0, camY);
-      for (let b of stack) {
-        ctx.fillStyle = b.color; ctx.fillRect(b.x, b.y, b.w, 22);
+    function updateGame3Breaker() {
+      g3Ball.position.x += g3BallVel.x;
+      g3Ball.position.z += g3BallVel.z;
+
+      // Wall bounces
+      if (g3Ball.position.x <= -4.9 || g3Ball.position.x >= 4.9) {
+        g3BallVel.x *= -1;
+        sfx('hit');
       }
-      if (mover) {
-        mover.x += mover.vx * mover.dir;
-        if (mover.x <= 0 || mover.x + mover.w >= canvas.width) mover.dir *= -1;
-        ctx.fillStyle = mover.color; ctx.fillRect(mover.x, mover.y, mover.w, 22);
-      }
-      ctx.restore();
-    }
-
-    function convertTik() {
-      if (data.tik < 50) { toast("Tiketi hazitoshi! (50 min)"); return; }
-      data.tik -= 50; data.tsh += 2000; save();
-      toast("Umebadili tiketi 50 kuwa Tsh 2,000!");
-    }
-
-    function requestPayout() {
-      const net = document.getElementById('inp-net').value;
-      const ph = document.getElementById('inp-ph').value.trim();
-      const amt = parseFloat(document.getElementById('inp-am').value);
-      const renewCheck = document.getElementById('chk-renew').checked;
-
-      if (ph.length < 9) { toast("Weka namba sahihi ya simu!"); return; }
-      if (isNaN(amt) || amt < 20000) { toast("Kima cha chini ni Tsh 20,000!"); return; }
-      if (amt > data.tsh) { toast("Salio la Tsh halitoshi!"); return; }
-
-      let finalPayout = amt;
-      let feeMsg = "";
-
-      if (renewCheck) {
-        finalPayout = amt - 5000;
-        data.tsh -= amt; data.tsh += 5000;
-        feeMsg = " (Tsh 5,000 ya kuendelea imebaki kwenye akaunti)";
-      } else {
-        data.tsh -= amt;
+      if (g3Ball.position.z <= -8.4) {
+        g3BallVel.z *= -1;
+        sfx('hit');
       }
 
-      data.payouts.unshift({ id: Date.now(), net, ph, amt: finalPayout.toLocaleString(), status: 'PENDING' });
-      document.getElementById('inp-am').value = '';
-      save();
-      toast("Ombi la Tsh " + finalPayout.toLocaleString() + " limetumwa!" + feeMsg);
+      // Paddle bounce
+      if (g3BallVel.z > 0 && Math.abs(g3Ball.position.z - g3Paddle.position.z) < 0.6 && Math.abs(g3Ball.position.x - g3Paddle.position.x) < 1.55) {
+        g3BallVel.z = -Math.abs(g3BallVel.z);
+        g3BallVel.x = (g3Ball.position.x - g3Paddle.position.x) * 0.14;
+        sfx('hit');
+      }
+
+      // Out of bounds
+      if (g3Ball.position.z > 9.2) {
+        spawn3DExplosion(g3Ball.position, 0xffcc00, 18);
+        endGame();
+        return;
+      }
+
+      // Brick collisions
+      let remaining = 0;
+      for (let b of g3Bricks) {
+        if (!b.alive) continue;
+        remaining++;
+        if (Math.abs(g3Ball.position.x - b.mesh.position.x) < 1.15 && Math.abs(g3Ball.position.z - b.mesh.position.z) < 0.65) {
+          b.alive = false;
+          scene.remove(b.mesh);
+          g3BallVel.z *= -1;
+          score += 3;
+          document.getElementById('hud-score').innerText = score;
+          sfx('boom');
+          spawn3DExplosion(b.mesh.position, b.color, 12);
+        }
+      }
+      if (remaining === 0) setupGame3Breaker();
     }
 
-    function markPaid(id) {
-      const p = data.payouts.find(x => x.id === id);
-      if (p) { p.status = 'PAID'; save(); toast('Imewekwa kuwa IMELIPWA ✓'); }
+    function updateGame4Tower() {
+      camera.position.y += (g4CamTargetY - camera.position.y) * 0.1;
+      camera.lookAt(0, camera.position.y - 4.5, 0);
+
+      if (g4Mover) {
+        g4Mover.mesh.position.x += g4Mover.speed * g4Dir;
+        if (g4Mover.mesh.position.x > 4.8) g4Dir = -1;
+        if (g4Mover.mesh.position.x < -4.8) g4Dir = 1;
+      }
     }
 
     function watchAd() {
-      if (data.ads >= 15) { toast("Kikomo cha matangazo kwa leo kimefikiwa!"); return; }
+      if (data.ads >= 25) { toast("Kikomo cha matangazo kwa leo kimefikiwa!"); return; }
       const fn = window['show_3573868'];
       if (typeof fn === 'function') {
         fn().then(() => {
           data.tik += 50; data.ads++; data.rev += 0.0025;
           save(); toast('+50 🎫 Zimeongezeka!');
         }).catch(() => {
-          // Fallback salama kama tangazo likigoma ili mchezaji asikwame
           data.tik += 50; data.ads++; data.rev += 0.0025;
           save(); toast('+50 🎫 Zimeongezeka (Offline Mode)!');
         });
@@ -865,7 +986,7 @@
     }
 
     load();
-    requestAnimationFrame(tick);
+    animate();
   </script>
 </body>
 </html>
